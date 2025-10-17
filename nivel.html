@@ -28,7 +28,7 @@
     <!-- 👇 Aquí va el botón con el stat al lado -->
     <div class="actions-row">
     <button id="scan-btn">Usar Carta</button>
-    <div class="stat">⚙️ Acciones: <span id="stat-acciones"></span></div>
+    <div class="stat-inline">⚙️ Acciones: <span id="stat-acciones"></span></div>
     </div>
   </div>
    <script src="game.js"></script> 
@@ -38,6 +38,7 @@
     //showSnackbar("debug: last "+last);
     if (last) {
       if (last.toLowerCase() === "cafe") {
+        modifyStat("acciones", -1);
         modifyStat("amor", 2);
         showSnackbar("¡Código correcto! ❤️");
         localStorage.removeItem("last_qr");
