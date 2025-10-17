@@ -3,25 +3,25 @@ const LEVELS = {
   "1": {
     text: "💌 Pista 1:\nEl lugar donde comenzó todo...",
     password: "cafe",
-    next: "2A",
+    next: ["2A", "2B"],
     image: "assets/images/perritos.jpg",
   },
   "2A": {
     text: "🌳 Pista 2A:\nBusca el árbol donde oramos juntos por primera vez.",
     password: "fe",
-    next: "2B",
+    next: ["final"],
     image: "assets/images/corazon.jpg",
   },
   "2B": {
     text: "☕ Pista 2B:\nRecuerda aquel café donde te reíste sin parar.",
     password: "risa",
-    next: "final",
+    next: ["final"],
     image: "assets/images/corazon.png",
   },
   "final": {
     text: "💍 Has completado la carrera del amor. Prepárate para el gran momento.",
     password: "?",
-    next: null,
+    next: [],
     image: "assets/images/corazon.png",
   },
 };
@@ -97,18 +97,23 @@ function confirmPassword(levelId) {
     showSnackbar("⚠️ Escribe una respuesta antes de continuar.");
     return;
   }
-  if (input === level.password.toLowerCase()) {    
-    if (level.next) {
-      showSnackbar("✅ ¡Respuesta correcta!<br>Haz empleado ❤️ y pasado el nivel",5000);
-      modifyStat("amor", -1);
-      setTimeout(() => (window.location.href = `nivel.html?id=${level.next}`),4000);
-            
-    } else {
-      showSnackbar("🎉 ¡Has completado la aventura!");
-    }
+
+  if (input === level.password.toLowerCase()) {
+    showSnackbar("✅ ¡Respuesta correcta!<br>Haz empleado ❤️ y pasado el nivel",5000);
+    modifyStat("amor", -1);
+    setTimeout(() => {
+      if (Array.isArray(level.next) && level.next.length > 1) {
+        showNextLevelDialog(level.next);
+      } else if (Array.isArray(level.next) && level.next.length === 1) {
+        window.location.href = `nivel.html?id=${level.next[0]}`;
+      } else {
+        showSnackbar("🎉 ¡Has completado la aventura!");
+      }
+    }, 3000);
   } else {
     showSnackbar("❌ Respuesta incorrecta, intenta de nuevo.");
   }
+
 }
 
 // ==================== CARGA DE NIVEL ====================
@@ -145,4 +150,41 @@ function loadLevel() {
       localStorage.removeItem("last_qr");
     }
   }
+}
+
+// ==================== POPUP PARA ELEGIR RUTA ====================
+function showNextLevelDialog(nextLevels) {
+  // Crear el fondo oscuro
+  const overlay = document.createElement("div");
+  overlay.className = "overlay";
+
+  // Crear el cuadro del diálogo
+  const dialog = document.createElement("div");
+  dialog.className = "dialog";
+
+  const title = document.createElement("h2");
+  title.innerText = "Elige tu siguiente destino ❤️";
+
+  const buttons = document.createElement("div");
+  buttons.className = "dialog-buttons";
+
+  nextLevels.forEach((lvl) => {
+    const btn = document.createElement("button");
+    btn.innerText = `Ir a nivel ${lvl}`;
+    btn.onclick = () => {
+      overlay.remove();
+      window.location.href = `nivel.html?id=${lvl}`;
+    };
+    buttons.appendChild(btn);
+  });
+
+  const closeBtn = document.createElement("button");
+  closeBtn.innerText = "Cancelar";
+  closeBtn.onclick = () => overlay.remove();
+
+  dialog.appendChild(title);
+  dialog.appendChild(buttons);
+  dialog.appendChild(closeBtn);
+  overlay.appendChild(dialog);
+  document.body.appendChild(overlay);
 }

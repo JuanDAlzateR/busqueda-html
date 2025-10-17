@@ -78,3 +78,55 @@ button {
   opacity: 1;
   bottom: 50px;
 }
+
+/* Fondo semitransparente */
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+/* Cuadro del diálogo */
+.dialog {
+  background: white;
+  padding: 20px 30px;
+  border-radius: 12px;
+  text-align: center;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+  width: 300px;
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+/* Animación suave */
+@keyframes fadeIn {
+  from { opacity: 0; transform: scale(0.9); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+/* Botones del diálogo */
+.dialog-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 15px;
+}
+
+.dialog button {
+  padding: 10px;
+  border: none;
+  border-radius: 8px;
+  background-color: #E91E63;
+  color: white;
+  cursor: pointer;
+}
+
+.dialog button:hover {
+  background-color: #c2185b;
+}
