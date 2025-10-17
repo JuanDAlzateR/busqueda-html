@@ -17,7 +17,7 @@
 
   <script>
     function cancelar() {
-      window.location.href = localStorage.getItem("previous_page") || "index.html";
+      window.location.href = ("nivel.html?id="+localStorage.getItem("previous_level")) || "index.html";
     }
 
     function showSnackbar(message) {
@@ -42,7 +42,7 @@
             localStorage.setItem("last_qr", decodedText);
             showSnackbar("QR detectado ✅ "+decodedText );
             setTimeout(() => {
-              window.location.href = localStorage.getItem("previous_page") || "index.html";
+              window.location.href = ("nivel.html?id="+localStorage.getItem("previous_level")) || "index.html";
             }, 1500);
           },
           (errorMessage) => {

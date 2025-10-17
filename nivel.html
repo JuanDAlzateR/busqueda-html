@@ -3,13 +3,14 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Nivel 2</title>
+  <title>Nivel</title>
   <link rel="stylesheet" href="style.css">
   <script src="game.js" defer></script>
 </head>
-<body>
+<body onload="loadLevel()">
   <div class="container">
-    <h1>Nivel 2 💕</h1>
+    <h1></h1>
+
     <div class="stats">
       <div class="stat">❤️ Amor: <span id="stat-amor"></span></div>
       <div class="stat">✝️ Fe: <span id="stat-fe"></span></div>
@@ -17,25 +18,27 @@
       <div class="stat">⏳ Tiempo: <span id="stat-tiempo"></span></div>
     </div>
 
-    <img src="assets/amor.jpg" alt="pista del amor">
-    <p>El amor se multiplica cuando compartes una sonrisa 💕</p>
+    <img id="level-image" src="" alt="imagen del nivel" />
+    <p id="level-text"></p>
 
-    <button onclick="goToQR('nivel2.html')">Escanear siguiente código</button>
+    <div class="input-box">
+      <input id="password-input" type="text" placeholder="Escribe la respuesta..." />
+      <button id="confirm-btn">Confirmar</button>
+    </div>
+
+    <button id="scan-btn">Escanear código</button>
   </div>
-
-  <script src="game.js"></script> 
+   <script src="game.js"></script> 
   <script>
-    function goToQR(currentPage) {
-      localStorage.setItem("previous_page", currentPage);
-      window.location.href = "qr.html";
-    }
 
     const last = localStorage.getItem("last_qr");
+    showSnackbar("debug: last "+last);
     if (last) {
-      if (last.toLowerCase() === "fe") {
-        modifyStat("fe", 3);
-        showSnackbar("¡Excelente, la fe te guía! ✝️");
+      if (last.toLowerCase() === "cafe") {
+        modifyStat("amor", 2);
+        showSnackbar("¡Código correcto! ❤️");
         localStorage.removeItem("last_qr");
+        setTimeout(() => (window.location.href = "nivel2.html"), 2000);
       } else {
         showSnackbar("Código incorrecto 😅");
         localStorage.removeItem("last_qr");

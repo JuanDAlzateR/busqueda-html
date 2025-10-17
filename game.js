@@ -1,38 +1,65 @@
-// Inicializa stats
-if (!localStorage.getItem("stats")) {
-  const initialStats = { amor: 5, fe: 5, dinero: 5, tiempo: 5 };
-  localStorage.setItem("stats", JSON.stringify(initialStats));
+// ==================== CONFIGURACIÓN DE NIVELES ====================
+const LEVELS = {
+  "1": {
+    text: "💌 Pista 1:\nEl lugar donde comenzó todo...",
+    password: "cafe",
+    next: "2A",
+    image: "assets/images/perritos.jpg",
+  },
+  "2A": {
+    text: "🌳 Pista 2A:\nBusca el árbol donde oramos juntos por primera vez.",
+    password: "fe",
+    next: "2B",
+    image: "assets/images/corazon.jpg",
+  },
+  "2B": {
+    text: "☕ Pista 2B:\nRecuerda aquel café donde te reíste sin parar.",
+    password: "risa",
+    next: "final",
+    image: "assets/images/corazon.png",
+  },
+  "final": {
+    text: "💍 Has completado la carrera del amor. Prepárate para el gran momento.",
+    password: "?",
+    next: null,
+    image: "assets/images/corazon.png",
+  },
+};
+
+// ==================== ESTADÍSTICAS ====================
+function loadStats() {
+  const stats = JSON.parse(localStorage.getItem("stats")) || {
+    amor: 0,
+    fe: 0,
+    dinero: 0,
+    tiempo: 0,
+  };
+  document.getElementById("stat-amor").innerText = stats.amor;
+  document.getElementById("stat-fe").innerText = stats.fe;
+  document.getElementById("stat-dinero").innerText = stats.dinero;
+  document.getElementById("stat-tiempo").innerText = stats.tiempo;
 }
 
-function getStats() {
-  return JSON.parse(localStorage.getItem("stats"));
-}
-
-function updateStatsDisplay() {
-  const stats = getStats();
-  document.getElementById("stat-amor").innerText = stats.amor + "/20";
-  document.getElementById("stat-fe").innerText = stats.fe + "/10";
-  document.getElementById("stat-dinero").innerText = stats.dinero + "/10";
-  document.getElementById("stat-tiempo").innerText = stats.tiempo + "/10";
-}
-
-function modifyStat(stat, delta) {
-  const stats = getStats();
-  stats[stat] = Math.min(Math.max(stats[stat] + delta, 0), stat === "amor" ? 20 : 10);
+function modifyStat(stat, value) {
+  const stats = JSON.parse(localStorage.getItem("stats")) || {
+    amor: 0,
+    fe: 0,
+    dinero: 0,
+    tiempo: 0,
+  };
+  stats[stat] += value;
   localStorage.setItem("stats", JSON.stringify(stats));
-  updateStatsDisplay();
+  loadStats();
 }
 
-function resetStat() {
-  const initialStats = { amor: 5, fe: 5, dinero: 5, tiempo: 5 };
-  localStorage.setItem("stats", JSON.stringify(initialStats));
-  updateStatsDisplay();
-}
-
+// ==================== SNACKBAR ====================
 function showSnackbar(message) {
   const snackbar = document.createElement("div");
   snackbar.className = "snackbar";
-  snackbar.innerText = message;
+  snackbar.innerHTML = `
+    <span>${message}</span>
+    <button onclick="this.parentElement.remove()">✖</button>
+  `;
   document.body.appendChild(snackbar);
 
   setTimeout(() => {
@@ -45,4 +72,64 @@ function showSnackbar(message) {
   }, 4000);
 }
 
-document.addEventListener("DOMContentLoaded", updateStatsDisplay);
+// ==================== QR ====================
+function goToQR(currentLevel) {
+  localStorage.setItem("previous_level", currentLevel);
+  window.location.href = "qr.html";
+}
+
+// ==================== CONFIRMAR RESPUESTA ====================
+function confirmPassword(levelId) {
+  const input = document.getElementById("password-input").value.trim().toLowerCase();
+  const level = LEVELS[levelId];
+  if (!input) {
+    showSnackbar("⚠️ Escribe una respuesta antes de continuar.");
+    return;
+  }
+  if (input === level.password.toLowerCase()) {
+    showSnackbar("✅ ¡Respuesta correcta!");
+    if (level.next) {
+      setTimeout(() => (window.location.href = `nivel.html?id=${level.next}`), 2000);
+    } else {
+      showSnackbar("🎉 ¡Has completado la aventura!");
+    }
+  } else {
+    showSnackbar("❌ Respuesta incorrecta, intenta de nuevo.");
+  }
+}
+
+// ==================== CARGA DE NIVEL ====================
+function loadLevel() {
+  const params = new URLSearchParams(window.location.search);
+  const id = params.get("id") || "1"; // Nivel por defecto
+  const level = LEVELS[id];
+
+  if (!level) {
+    document.querySelector(".container").innerHTML = "<h1>Nivel no encontrado 😢</h1>";
+    return;
+  }
+
+  document.querySelector("h1").innerText = `Nivel ${id}`;
+  document.querySelector("#level-image").src = level.image;
+  document.querySelector("#level-text").innerHTML = level.text.replace(/\n/g, "<br>");
+  document.querySelector("#scan-btn").onclick = () => goToQR(id);
+  document.querySelector("#confirm-btn").onclick = () => confirmPassword(id);
+
+  loadStats();
+
+  // Verifica si hay resultado de escaneo pendiente
+  const last = localStorage.getItem("last_qr");
+  if (last) {
+    if (last.toLowerCase() === level.password.toLowerCase()) {
+      modifyStat("amor", 2);
+      showSnackbar("¡Código correcto! ❤️");
+      localStorage.removeItem("last_qr");
+      if (level.next) {
+        setTimeout(() => (window.location.href = `nivel.html?id=${level.next}`), 2000);
+      }
+    } else {
+      showSnackbar("Código incorrecto 😅");
+      localStorage.removeItem("last_qr");
+    }
+  }
+}
