@@ -45,11 +45,13 @@ function loadStats() {
     fe: 0,
     dinero: 0,
     tiempo: 0,
+    acciones: 0,
   };
   document.getElementById("stat-amor").innerText = stats.amor;
   document.getElementById("stat-fe").innerText = stats.fe;
   document.getElementById("stat-dinero").innerText = stats.dinero;
   document.getElementById("stat-tiempo").innerText = stats.tiempo;
+  
 }
 
 function modifyStat(stat, value) {
@@ -58,6 +60,7 @@ function modifyStat(stat, value) {
     fe: 0,
     dinero: 0,
     tiempo: 0,
+    acciones: 0,
   };
   stats[stat] += value;
   localStorage.setItem("stats", JSON.stringify(stats));
@@ -70,6 +73,7 @@ function resetStat() {
     fe: 5,
     dinero: 5,
     tiempo: 5,
+    acciones: 1,
   };  
   localStorage.setItem("stats", JSON.stringify(stats));
   loadStats();
