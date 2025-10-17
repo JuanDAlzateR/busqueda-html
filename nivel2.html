@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Nivel 1 - La Aventura Comienza 🌅</title>
+  <title>Nivel 2 - El Reto del Amor ❤️</title>
   <link rel="stylesheet" href="style.css">
   <script src="https://unpkg.com/html5-qrcode"></script>
   <script src="game.js" defer></script>
@@ -11,7 +11,7 @@
 </head>
 <body>
   <div class="container">
-    <h1>Nivel 1</h1>
+    <h1>Nivel 2</h1>
     <div class="stats">
       <div class="stat">❤️ Amor: <span id="stat-amor"></span></div>
       <div class="stat">✝️ Fe: <span id="stat-fe"></span></div>
@@ -19,19 +19,19 @@
       <div class="stat">⏳ Tiempo: <span id="stat-tiempo"></span></div>
     </div>
 
-    <img src="assets/cafe.jpg" alt="Pista del café">
-    <p>Encuentra el lugar donde el aroma te despierte los sentidos ☕</p>
+    <img src="assets/amor.jpg" alt="Pista del amor">
+    <p>El amor se multiplica cuando compartes una sonrisa 💕</p>
 
-    <button onclick="startQRScanner(handleQR)">Escanear código</button>
+    <button onclick="startQRScanner(handleQR)">Escanear siguiente código</button>
     <div id="reader"></div>
   </div>
 
   <script>
     function handleQR(decodedText) {
       alert(`Código leído: ${decodedText}`);
-      if (decodedText.toLowerCase() === "cafe") {
-        modifyStat("amor", 2);
-        window.location.href = "nivel2.html";
+      if (decodedText.toLowerCase() === "fe") {
+        modifyStat("fe", 3);
+        window.location.href = "nivel3.html";
       } else {
         alert("Código incorrecto 😅");
       }
