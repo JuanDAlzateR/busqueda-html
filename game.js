@@ -28,7 +28,11 @@ function showSnackbar(message) {
   snackbar.className = "snackbar";
   snackbar.innerText = message;
   document.body.appendChild(snackbar);
-  snackbar.classList.add("show");
+
+  setTimeout(() => {
+    snackbar.classList.add("show");
+  }, 100); // pequeña pausa para activar animación
+
   setTimeout(() => {
     snackbar.classList.remove("show");
     snackbar.remove();
