@@ -26,13 +26,13 @@
       <button id="confirm-btn">Confirmar</button>
     </div>
 
-    <button id="scan-btn">Escanear código</button>
+    <button id="scan-btn">Usar Carta</button>
   </div>
    <script src="game.js"></script> 
   <script>
 
     const last = localStorage.getItem("last_qr");
-    showSnackbar("debug: last "+last);
+    //showSnackbar("debug: last "+last);
     if (last) {
       if (last.toLowerCase() === "cafe") {
         modifyStat("amor", 2);

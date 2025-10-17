@@ -52,8 +52,19 @@ function modifyStat(stat, value) {
   loadStats();
 }
 
+function resetStat() {
+  const stats = {
+    amor: 5,
+    fe: 5,
+    dinero: 5,
+    tiempo: 5,
+  };  
+  localStorage.setItem("stats", JSON.stringify(stats));
+  loadStats();
+}
+
 // ==================== SNACKBAR ====================
-function showSnackbar(message) {
+function showSnackbar(message,time=4000) {
   const snackbar = document.createElement("div");
   snackbar.className = "snackbar";
   snackbar.innerHTML = `
@@ -69,7 +80,7 @@ function showSnackbar(message) {
   setTimeout(() => {
     snackbar.classList.remove("show");
     snackbar.remove();
-  }, 4000);
+  }, time);
 }
 
 // ==================== QR ====================
@@ -86,10 +97,12 @@ function confirmPassword(levelId) {
     showSnackbar("⚠️ Escribe una respuesta antes de continuar.");
     return;
   }
-  if (input === level.password.toLowerCase()) {
-    showSnackbar("✅ ¡Respuesta correcta!");
+  if (input === level.password.toLowerCase()) {    
     if (level.next) {
-      setTimeout(() => (window.location.href = `nivel.html?id=${level.next}`), 2000);
+      showSnackbar("✅ ¡Respuesta correcta!<br>Haz empleado ❤️ y pasado el nivel",5000);
+      modifyStat("amor", -1);
+      setTimeout(() => (window.location.href = `nivel.html?id=${level.next}`),4000);
+            
     } else {
       showSnackbar("🎉 ¡Has completado la aventura!");
     }
