@@ -9,7 +9,7 @@
 </head>
 <body>
   <div class="container">
-    <h1>Home ☕</h1>
+    <h1>Nivel 1 ☕</h1>
     <div class="stats">
       <div class="stat">❤️ Amor: <span id="stat-amor"></span></div>
       <div class="stat">✝️ Fe: <span id="stat-fe"></span></div>
@@ -17,20 +17,34 @@
       <div class="stat">⏳ Tiempo: <span id="stat-tiempo"></span></div>
     </div>
 
-    <img src="assets/cafe.jpg" alt="inicio">
+    <img src="assets/cafe.jpg" alt="pista del café">
     <p>Encuentra el lugar donde el aroma te despierte los sentidos ☕</p>
 
-    <button onclick="goTo()">Empezar</button>
+    <button onclick="goToQR('index.html')">Escanear código</button>
   </div>
 
   <!-- importante definir el src, para cargar las funciones adecuadas -->
   <script src="game.js"></script> 
   <script>
-    resetStat()
-    function goTo() {      
-      window.location.href = "nivel1.html";
+
+    function goToQR(currentPage) {
+      localStorage.setItem("previous_page", currentPage);
+      window.location.href = "qr.html";
     }
-    
+
+    const last = localStorage.getItem("last_qr");
+    showSnackbar("debug: last "+last);
+    if (last) {
+      if (last.toLowerCase() === "cafe") {
+        modifyStat("amor", 2);
+        showSnackbar("¡Código correcto! ❤️");
+        localStorage.removeItem("last_qr");
+        setTimeout(() => (window.location.href = "nivel2.html"), 2000);
+      } else {
+        showSnackbar("Código incorrecto 😅");
+        localStorage.removeItem("last_qr");
+      }
+    }
   </script>
 </body>
 </html>

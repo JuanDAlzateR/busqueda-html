@@ -23,6 +23,12 @@ function modifyStat(stat, delta) {
   updateStatsDisplay();
 }
 
+function resetStat() {
+  const initialStats = { amor: 5, fe: 5, dinero: 5, tiempo: 5 };
+  localStorage.setItem("stats", JSON.stringify(initialStats));
+  updateStatsDisplay();
+}
+
 function showSnackbar(message) {
   const snackbar = document.createElement("div");
   snackbar.className = "snackbar";
