@@ -51,7 +51,7 @@ function loadStats() {
   document.getElementById("stat-fe").innerText = stats.fe;
   document.getElementById("stat-dinero").innerText = stats.dinero;
   document.getElementById("stat-tiempo").innerText = stats.tiempo;
-  
+  document.getElementById("stat-acciones").innerText = stats.acciones;
 }
 
 function modifyStat(stat, value) {
