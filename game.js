@@ -5,24 +5,36 @@ const LEVELS = {
     password: "cafe",
     next: ["2A", "2B"],
     image: "assets/images/perritos.jpg",
+    reward: {
+      text: "¡Ganaste +2 puntos de Amor! ❤️",
+      image: "assets/images/reward_1.jpeg",},
   },
   "2A": {
     text: "🌳 Pista 2A:\nBusca el árbol donde oramos juntos por primera vez.",
     password: "fe",
     next: ["final"],
     image: "assets/images/corazon.jpg",
+    reward: {
+      text: "¡Ganaste +2 puntos de Amor! ❤️",
+      image: "assets/images/reward_heart.png",},
   },
   "2B": {
     text: "☕ Pista 2B:\nRecuerda aquel café donde te reíste sin parar.",
     password: "risa",
     next: ["final"],
     image: "assets/images/corazon.png",
+    reward: {
+      text: "¡Ganaste +2 puntos de Amor! ❤️",
+      image: "assets/images/reward_heart.png",},
   },
   "final": {
     text: "💍 Has completado la carrera del amor. Prepárate para el gran momento.",
     password: "?",
     next: [],
     image: "assets/images/corazon.png",
+    reward: {
+      text: "¡Ganaste +2 puntos de Amor! ❤️",
+      image: "assets/images/reward_heart.png",},
   },
 };
 
@@ -102,13 +114,16 @@ function confirmPassword(levelId) {
     showSnackbar("✅ ¡Respuesta correcta!<br>Haz empleado ❤️ y pasado el nivel",5000);
     modifyStat("amor", -1);
     setTimeout(() => {
-      if (Array.isArray(level.next) && level.next.length > 1) {
-        showNextLevelDialog(level.next);
-      } else if (Array.isArray(level.next) && level.next.length === 1) {
-        window.location.href = `nivel.html?id=${level.next[0]}`;
-      } else {
-        showSnackbar("🎉 ¡Has completado la aventura!");
-      }
+      // Mostrar recompensa primero
+      showRewardDialog(level, () => {
+        if (Array.isArray(level.next) && level.next.length > 1) {
+          showNextLevelDialog(level.next);
+        } else if (Array.isArray(level.next) && level.next.length === 1) {
+          window.location.href = `nivel.html?id=${level.next[0]}`;
+        } else {
+          showSnackbar("🎉 ¡Has completado la aventura!");
+        }
+      });
     }, 3000);
   } else {
     showSnackbar("❌ Respuesta incorrecta, intenta de nuevo.");
@@ -185,6 +200,42 @@ function showNextLevelDialog(nextLevels) {
   dialog.appendChild(title);
   dialog.appendChild(buttons);
   dialog.appendChild(closeBtn);
+  overlay.appendChild(dialog);
+  document.body.appendChild(overlay);
+}
+
+// ==================== POPUP PARA RECOMPENSA ====================
+function showRewardDialog(level, onContinue) {
+  const overlay = document.createElement("div");
+  overlay.className = "overlay";
+
+  const dialog = document.createElement("div");
+  dialog.className = "dialog";
+
+  const title = document.createElement("h2");
+  title.innerText = "🎁 ¡Recompensa desbloqueada!";
+
+  const img = document.createElement("img");
+  img.src = level.reward?.image || "assets/images/reward_default.png";
+  img.alt = "Recompensa";
+  img.style.width = "200px";
+  img.style.borderRadius = "10px";
+  img.style.margin = "10px 0";
+
+  const text = document.createElement("p");
+  text.innerText = level.reward?.text || "¡Has ganado puntos de amor! ❤️";
+
+  const btn = document.createElement("button");
+  btn.innerText = "Continuar ➡️";
+  btn.onclick = () => {
+    overlay.remove();
+    onContinue();
+  };
+
+  dialog.appendChild(title);
+  dialog.appendChild(img);
+  dialog.appendChild(text);
+  dialog.appendChild(btn);
   overlay.appendChild(dialog);
   document.body.appendChild(overlay);
 }
