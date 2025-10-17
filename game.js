@@ -67,6 +67,24 @@ function modifyStat(stat, value) {
   loadStats();
 }
 
+function setStat(stat, value) {
+  const stats = JSON.parse(localStorage.getItem("stats")) || {
+    amor: 0,
+    fe: 0,
+    dinero: 0,
+    tiempo: 0,
+    acciones: 0,
+  };
+  stats[stat] = value;
+  localStorage.setItem("stats", JSON.stringify(stats));
+  loadStats();
+}
+
+function getStat(stat) {
+  const stats = JSON.parse(localStorage.getItem("stats"))
+  return stats?.[stat] ?? -1;
+}
+
 function resetStat() {
   const stats = {
     amor: 5,
@@ -101,8 +119,14 @@ function showSnackbar(message,time=4000) {
 
 // ==================== QR ====================
 function goToQR(currentLevel) {
-  localStorage.setItem("previous_level", currentLevel);
-  window.location.href = "qr.html";
+  if(getStat("acciones")>0){
+    localStorage.setItem("previous_level", currentLevel);
+    setTimeout(() =>{window.location.href = "qr.html"},3000);
+  }else{
+    showSnackbar("Este turno ya no quedan más acciones disponibles");
+  }
+  
+  
 }
 
 // ==================== CONFIRMAR RESPUESTA ====================
@@ -117,6 +141,7 @@ function confirmPassword(levelId) {
   if (input === level.password.toLowerCase()) {
     showSnackbar("✅ ¡Respuesta correcta!<br>Haz empleado ❤️ y pasado el nivel",5000);
     modifyStat("amor", -1);
+    setStat("acciones",1);
     setTimeout(() => {
       // Mostrar recompensa primero
       showRewardDialog(level, () => {
