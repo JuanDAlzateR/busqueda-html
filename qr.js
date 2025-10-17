@@ -1,4 +1,4 @@
-function startQRScanner(callback) {
+function startQRScanner() {
   const reader = document.getElementById("reader");
   const html5QrCode = new Html5Qrcode("reader");
 
@@ -8,10 +8,13 @@ function startQRScanner(callback) {
     (decodedText, decodedResult) => {
       html5QrCode.stop();
       reader.innerHTML = "";
-      callback(decodedText);
+      localStorage.setItem("last_qr", decodedText);
+      showSnackbar(`Código leído: ${decodedText}`);
+      setTimeout(() => {
+        const previous = localStorage.getItem("previous_page") || "index.html";
+        window.location.href = previous;
+      }, 2000);
     },
-    (error) => {
-      console.warn("QR error:", error);
-    }
+    (error) => console.warn("QR error:", error)
   );
 }

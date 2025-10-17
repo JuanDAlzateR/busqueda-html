@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Escanear QR</title>
+  <link rel="stylesheet" href="style.css" />
+  <script src="https://unpkg.com/html5-qrcode"></script>
+  <script src="game.js" defer></script>
+</head>
+<body>
+  <div class="container">
+    <h1>Escanea el Código 📷</h1>
+    <div id="reader" style="width:300px; margin:auto;"></div>
+    <button onclick="cancelar()">Cancelar</button>
+  </div>
+
+  <script>
+    function cancelar() {
+      window.location.href = localStorage.getItem("previous_page") || "index.html";
+    }
+
+    function showSnackbar(message) {
+      const snackbar = document.createElement("div");
+      snackbar.className = "snackbar";
+      snackbar.innerText = message;
+      document.body.appendChild(snackbar);
+      snackbar.classList.add("show");
+      setTimeout(() => snackbar.remove(), 3000);
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+      const html5QrCode = new Html5Qrcode("reader");
+
+      html5QrCode
+        .start(
+          { facingMode: "environment" },
+          { fps: 10, qrbox: 250 },
+          (decodedText) => {
+            console.log("Código detectado:", decodedText);
+            html5QrCode.stop();
+            localStorage.setItem("last_qr", decodedText);
+            showSnackbar("QR detectado ✅ "+decodedText );
+            setTimeout(() => {
+              window.location.href = localStorage.getItem("previous_page") || "index.html";
+            }, 1500);
+          },
+          (errorMessage) => {
+            console.warn("Escaneo en progreso:", errorMessage);
+          }
+        )
+        .catch((err) => {
+          console.error("Error al iniciar cámara:", err);
+          alert("No se pudo acceder a la cámara. Asegúrate de permitir acceso.");
+        });
+    });
+  </script>
+</body>
+</html>

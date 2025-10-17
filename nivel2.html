@@ -3,15 +3,13 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Nivel 2 - El Reto del Amor ❤️</title>
+  <title>Nivel 2</title>
   <link rel="stylesheet" href="style.css">
-  <script src="https://unpkg.com/html5-qrcode"></script>
   <script src="game.js" defer></script>
-  <script src="qr.js" defer></script>
 </head>
 <body>
   <div class="container">
-    <h1>Nivel 2</h1>
+    <h1>Nivel 2 💕</h1>
     <div class="stats">
       <div class="stat">❤️ Amor: <span id="stat-amor"></span></div>
       <div class="stat">✝️ Fe: <span id="stat-fe"></span></div>
@@ -19,21 +17,27 @@
       <div class="stat">⏳ Tiempo: <span id="stat-tiempo"></span></div>
     </div>
 
-    <img src="assets/amor.jpg" alt="Pista del amor">
+    <img src="assets/amor.jpg" alt="pista del amor">
     <p>El amor se multiplica cuando compartes una sonrisa 💕</p>
 
-    <button onclick="startQRScanner(handleQR)">Escanear siguiente código</button>
-    <div id="reader"></div>
+    <button onclick="goToQR('nivel2.html')">Escanear siguiente código</button>
   </div>
 
   <script>
-    function handleQR(decodedText) {
-      alert(`Código leído: ${decodedText}`);
-      if (decodedText.toLowerCase() === "fe") {
+    function goToQR(currentPage) {
+      localStorage.setItem("previous_page", currentPage);
+      window.location.href = "qr.html";
+    }
+
+    const last = localStorage.getItem("last_qr");
+    if (last) {
+      if (last.toLowerCase() === "fe") {
         modifyStat("fe", 3);
-        window.location.href = "nivel3.html";
+        showSnackbar("¡Excelente, la fe te guía! ✝️");
+        localStorage.removeItem("last_qr");
       } else {
-        alert("Código incorrecto 😅");
+        showSnackbar("Código incorrecto 😅");
+        localStorage.removeItem("last_qr");
       }
     }
   </script>

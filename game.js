@@ -1,4 +1,4 @@
-// Inicializa stats si no existen
+// Inicializa stats
 if (!localStorage.getItem("stats")) {
   const initialStats = { amor: 5, fe: 5, dinero: 5, tiempo: 5 };
   localStorage.setItem("stats", JSON.stringify(initialStats));
@@ -23,9 +23,16 @@ function modifyStat(stat, delta) {
   updateStatsDisplay();
 }
 
-function resetStats() {
-  localStorage.removeItem("stats");
-  location.reload();
+function showSnackbar(message) {
+  const snackbar = document.createElement("div");
+  snackbar.className = "snackbar";
+  snackbar.innerText = message;
+  document.body.appendChild(snackbar);
+  snackbar.classList.add("show");
+  setTimeout(() => {
+    snackbar.classList.remove("show");
+    snackbar.remove();
+  }, 4000);
 }
 
 document.addEventListener("DOMContentLoaded", updateStatsDisplay);
