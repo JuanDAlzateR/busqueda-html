@@ -8,6 +8,9 @@ const LEVELS = {
     reward: {
       text: "¡Ganaste +2 puntos de Amor! ❤️",
       image: "assets/images/reward_1.jpeg",},
+    gps: {
+      lat: 6.2080,  
+      lon: -75.6010,},
   },
   "2A": {
     text: "🌳 Pista 2A:\nBusca el árbol donde oramos juntos por primera vez.",
@@ -17,6 +20,9 @@ const LEVELS = {
     reward: {
       text: "¡Ganaste +2 puntos de Amor! ❤️",
       image: "assets/images/reward_heart.png",},
+    gps: {
+      lat: 6.2080,  
+      lon: -75.6010,},
   },
   "2B": {
     text: "☕ Pista 2B:\nRecuerda aquel café donde te reíste sin parar.",
@@ -26,6 +32,9 @@ const LEVELS = {
     reward: {
       text: "¡Ganaste +2 puntos de Amor! ❤️",
       image: "assets/images/reward_heart.png",},
+    gps: {
+      lat: 6.2080,  
+      lon: -75.6010,},
   },
   "final": {
     text: "💍 Has completado la carrera del amor. Prepárate para el gran momento.",
@@ -35,6 +44,9 @@ const LEVELS = {
     reward: {
       text: "¡Ganaste +2 puntos de Amor! ❤️",
       image: "assets/images/reward_heart.png",},
+    gps: {
+      lat: 6.2080,  
+      lon: -75.6010,},
   },
 };
 
@@ -267,4 +279,25 @@ function showRewardDialog(level, onContinue) {
   dialog.appendChild(btn);
   overlay.appendChild(dialog);
   document.body.appendChild(overlay);
+}
+
+// ==================== FUNCION GPS ====================
+function getLocation() {
+  if ("geolocation" in navigator) {
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        const lat = position.coords.latitude;
+        const lon = position.coords.longitude;
+        console.log(`📍 Tu ubicación: ${lat}, ${lon}`);
+        showSnackbar(`📍 Ubicación detectada: ${lat.toFixed(4)}, ${lon.toFixed(4)}`);
+        localStorage.setItem("last_location", JSON.stringify({ lat, lon }));
+      },
+      (error) => {
+        console.error("❌ Error obteniendo ubicación:", error.message);
+        showSnackbar("❌ No se pudo obtener la ubicación. Verifica permisos GPS.");
+      }
+    );
+  } else {
+    showSnackbar("⚠️ Este dispositivo no soporta geolocalización.");
+  }
 }
