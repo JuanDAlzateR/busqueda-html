@@ -283,6 +283,7 @@ function showRewardDialog(level, onContinue) {
 
 // ==================== FUNCION GPS ====================
 function getLocation() {
+  showSnackbar("activando gps...")
   if ("geolocation" in navigator) {
     navigator.geolocation.getCurrentPosition(
       (position) => {
