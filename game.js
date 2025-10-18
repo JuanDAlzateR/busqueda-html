@@ -111,7 +111,7 @@ function resetStat() {
 }
 
 // ==================== SNACKBAR ====================
-function showSnackbar(message,time=4000) {
+function showSnackbar(message,time=4000,permanent=false) {
   const snackbar = document.createElement("div");
   snackbar.className = "snackbar";
   snackbar.innerHTML = `
@@ -124,23 +124,32 @@ function showSnackbar(message,time=4000) {
     snackbar.classList.add("show");
   }, 100); // pequeña pausa para activar animación
 
-  setTimeout(() => {
-    snackbar.classList.remove("show");
-    snackbar.remove();
-  }, time);
+  if(!permanent){
+    setTimeout(() => {
+      snackbar.classList.remove("show");
+      snackbar.remove();
+    }, time);
+  }
 }
 
 // ==================== QR ====================
 function goToQR(currentLevel) {
   if(getStat("acciones")>0){
     localStorage.setItem("previous_level", currentLevel);
-    setTimeout(() =>{window.location.href = "qr.html"},3000);
+    setTimeout(() =>{window.location.href = "qr.html"},1000);
   }else{
     showSnackbar("Este turno ya no quedan más acciones disponibles");
   }
-  
-  
+    
 }
+
+// ==================== GPS ====================
+function goToGPS(currentLevel) {
+  localStorage.setItem("previous_level", currentLevel);
+  window.location.href = "gps-test.html";
+
+}
+
 
 // ==================== CONFIRMAR RESPUESTA ====================
 function confirmPassword(levelId) {
@@ -284,7 +293,7 @@ function showRewardDialog(level, onContinue) {
 
 // ==================== FUNCION GPS ====================
 function getLocation() {
-  showSnackbar("activando gps...");
+  showSnackbar("activando gps, favor esperar unos segundos...");
   return new Promise((resolve, reject) =>{
     if ("geolocation" in navigator) {
       navigator.geolocation.getCurrentPosition(
@@ -314,7 +323,7 @@ async function handleLocation() {
   try {
     const { lat, lon } = await getLocation();
     console.log("Ubicación obtenida:", lat, lon);
-    showSnackbar(`📍handle ${lat.toFixed(6)}, ${lon.toFixed(6)}`);
+    showSnackbar(`📍handle ${lat.toFixed(6)}, ${lon.toFixed(6)}`,0,true);
   } catch (err) {
     console.error("Error:", err.message);
     showSnackbar("❌ No se pudo obtener la ubicación.");
@@ -324,7 +333,7 @@ async function handleLocation() {
 async function compareLocation(levelId) {
   const tolerance = 0.00005;
   const level = LEVELS[levelId];
-  showSnackbar("debug:"+level.gps.lat);
+
   try {
     const { lat, lon } = await getLocation();    
     const compare=diferenceLocation(lat,level.gps.lat,lon,level.gps.lon,tolerance);
@@ -345,6 +354,6 @@ async function compareLocation(levelId) {
 function diferenceLocation(lat1,lat2,lon1,lon2,tolerance) {
   const difLat=Math.abs(lat1-lat2);
   const difLon=Math.abs(lon1-lon2);
-  showSnackbar(`Lat: ${difLat.toFixed(5)},  Lon: ${difLon.toFixed(5)}`);
+  showSnackbar(`Lat: ${difLat.toFixed(5)},  Lon: ${difLon.toFixed(5)}`,0,true);
   return (difLat<=tolerance) && (difLon<=tolerance);
 }

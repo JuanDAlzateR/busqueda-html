@@ -102,6 +102,7 @@ button {
   box-shadow: 0 4px 12px rgba(0,0,0,0.3);
   width: 300px;
   animation: fadeIn 0.3s ease-in-out;
+  /*font-size: 2rem; /* 🔹 aumenta tamaño de la letra */
 }
 
 /* Animación suave */
@@ -159,4 +160,8 @@ button {
   font-size: 1.1em;
   color: #333;
   font-weight: bold;
+}
+
+#password-input {
+  font-size: 1.2rem;
 }

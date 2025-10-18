@@ -3,13 +3,13 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Nivel 1</title>
+  <title>GPS</title>
   <link rel="stylesheet" href="style.css">
-  <script src="game.js" defer></script>
+
 </head>
 <body>
   <div class="container">
-    <h1>Home ☕</h1>
+    <h1>GPS 🧭</h1>
     <div class="stats">
       <div class="stat">❤️ Amor: <span id="stat-amor"></span></div>
       <div class="stat">✝️ Fe: <span id="stat-fe"></span></div>
@@ -17,20 +17,24 @@
       <div class="stat">⏳ Tiempo: <span id="stat-tiempo"></span></div>
     </div>
 
-    <img src="assets/cafe.jpg" alt="inicio">
-    <p>Empieza la aventura...</p>
+    <img src="assets/cafe.jpg" alt="gps">
+    <p>Herramienta de ayuda para GPS</p>
 
-    <button onclick="goTo()">Empezar</button>
-    <button onclick="goToGPS()">GPS</button>
- 
+    <button onclick="cancelar()">Regresar</button>
+    <button onclick="handleLocation()">handle</button>
+    <button onclick="compareLocation('1')">compare</button>
   </div>
 
   <!-- importante definir el src, para cargar las funciones adecuadas -->
   <script src="game.js"></script> 
   <script>
-    resetStat()
-    function goTo() {      
-      window.location.href = "nivel.html?id=1";
+    function cancelar() {
+      const previous_level=localStorage.getItem("previous_level");
+      if((""+previous_level)!="undefined"){
+        window.location.href = ("nivel.html?id="+previous_level);
+      }else{
+        window.location.href = ("index.html");
+      }      
     }
     
   </script>
