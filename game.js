@@ -49,6 +49,7 @@ const LEVELS = {
       lon: -75.6010,},
   },
 };
+//6.207995, -75.600965 
 
 // ==================== ESTADÍSTICAS ====================
 function loadStats() {
@@ -283,23 +284,67 @@ function showRewardDialog(level, onContinue) {
 
 // ==================== FUNCION GPS ====================
 function getLocation() {
-  
   showSnackbar("activando gps...");
-  if ("geolocation" in navigator) {
-    navigator.geolocation.getCurrentPosition(
-      (position) => {
-        const lat = position.coords.latitude;
-        const lon = position.coords.longitude;
-        console.log(`📍 Tu ubicación: ${lat}, ${lon}`);
-        showSnackbar(`📍 Ubicación detectada: ${lat.toFixed(4)}, ${lon.toFixed(4)}`);
-        localStorage.setItem("last_location", JSON.stringify({ lat, lon }));
-      },
-      (error) => {
-        console.error("❌ Error obteniendo ubicación:", error.message);
-        showSnackbar("❌ No se pudo obtener la ubicación. Verifica permisos GPS.");
-      }
-    );
-  } else {
-    showSnackbar("⚠️ Este dispositivo no soporta geolocalización.");
+  return new Promise((resolve, reject) =>{
+    if ("geolocation" in navigator) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          const lat = position.coords.latitude;
+          const lon = position.coords.longitude;
+          console.log(`📍 Tu ubicación: ${lat}, ${lon}`);
+          //showSnackbar(`📍 Ubicación detectada: ${lat.toFixed(4)}, ${lon.toFixed(4)}`);
+          localStorage.setItem("last_location", JSON.stringify({ lat, lon }));
+          resolve({lat,lon});
+          
+        },
+        (error) => {
+          console.error("❌ Error obteniendo ubicación:", error.message);
+          //showSnackbar("❌ No se pudo obtener la ubicación. Verifica permisos GPS.");
+          reject(error)
+        }
+      );
+    } else {
+      //showSnackbar("⚠️ Este dispositivo no soporta geolocalización.");
+      reject(new Error("Geolocalización no soportada."));
+    }
+  });
+}
+
+async function handleLocation() {
+  try {
+    const { lat, lon } = await getLocation();
+    console.log("Ubicación obtenida:", lat, lon);
+    showSnackbar(`📍handle ${lat.toFixed(6)}, ${lon.toFixed(6)}`);
+  } catch (err) {
+    console.error("Error:", err.message);
+    showSnackbar("❌ No se pudo obtener la ubicación.");
   }
+}
+
+async function compareLocation(levelId) {
+  const tolerance = 0.00005;
+  const level = LEVELS[levelId];
+  showSnackbar("debug:"+level.gps.lat);
+  try {
+    const { lat, lon } = await getLocation();    
+    const compare=diferenceLocation(lat,level.gps.lat,lon,level.gps.lon,tolerance);
+    if (compare){
+      //showSnackbar("✅Locacion correcta.");
+    }else{
+      //showSnackbar("❌ Locación incorrecta.");
+    }
+    return compare;
+  } catch (err) {
+    console.error("Error:", err.message);
+    showSnackbar("❌ No se pudo obtener la ubicación.");
+    return false;
+  }
+
+}
+
+function diferenceLocation(lat1,lat2,lon1,lon2,tolerance) {
+  const difLat=Math.abs(lat1-lat2);
+  const difLon=Math.abs(lon1-lon2);
+  showSnackbar(`Lat: ${difLat.toFixed(5)},  Lon: ${difLon.toFixed(5)}`);
+  return (difLat<=tolerance) && (difLon<=tolerance);
 }
