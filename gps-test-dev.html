@@ -7,7 +7,7 @@
   <link rel="stylesheet" href="style.css">
 
 </head>
-<body onload="loadStats()">
+<body>
   <div class="container">
     <h1>GPS 🧭</h1>
     <div class="stats">
@@ -22,28 +22,28 @@
 
     <div class="input-box">
       <input id="text-input" type="text" placeholder="Escribe la respuesta..." />
-      <button id="compare-gps" onclick="comparar()">Buscar</button>
+      <button id="btn-compareLocation">compare</button>
     </div>
 
-    <button onclick="cancelar()">Regresar</button>
-
+    <button id="btn-cancelar">Regresar</button>
+       
   </div>
 
   <!-- importante definir el src, para cargar las funciones adecuadas -->
-  <script type="module" src="game.js"></script>
-  <script>
+ <script type="module">
+  import * as game from "./game.js";
     function cancelar() {
       window.location.href = ("gps-test.html");
-
       }
       
     function comparar() {
       const input = document.getElementById("text-input").value.trim();
-      compareLocationGPS(input)
-
+      game.compareLocationGPS(input)
       }  
 
-    const input = document.getElementById("password-input").value.trim().toLowerCase();
+    // 3. Adjuntar los event listeners (la mejor práctica)
+    document.getElementById('btn-cancelar').addEventListener('click', cancelar);
+    document.getElementById('btn-compareLocation').addEventListener('click', comparar);
     
   </script>
 </body>

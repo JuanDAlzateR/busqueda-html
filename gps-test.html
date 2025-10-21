@@ -7,7 +7,7 @@
   <link rel="stylesheet" href="style.css">
 
 </head>
-<body onload="loadStats()">
+<body>
   <div class="container">
     <h1>GPS 🧭</h1>
     <div class="stats">
@@ -20,15 +20,16 @@
     <img src="assets/cafe.jpg" alt="gps">
     <p>Herramienta de ayuda para GPS</p>
 
-    <button onclick="cancelar()">Regresar</button>
-    <button onclick="devGps()">dev gps</button>
-    <button onclick="handleLocation()">handle</button>
-    <button onclick="compareLocation('JD')">compare</button>
+    <button id="btn-cancelar">Regresar</button>
+    <button id="btn-devGps">dev gps</button>
+    <button id="btn-handleLocation">handle</button>
+    <button id="btn-compareLocation">compare</button>
   </div>
 
   <!-- importante definir el src, para cargar las funciones adecuadas -->
-  <script type="module" src="game.js"></script>
-  <script>
+    <script type="module">
+    import * as game from "./game.js";
+ 
     function cancelar() {
       const previous_level=localStorage.getItem("previous_level");
       if((""+previous_level)!="undefined"){
@@ -42,8 +43,12 @@
       window.location.href = ("gps-test-dev.html");
 
     }
-    
-    
+        // 3. Adjuntar los event listeners (la mejor práctica)
+    document.getElementById('btn-cancelar').addEventListener('click', cancelar);
+    document.getElementById('btn-devGps').addEventListener('click', devGps);
+    document.getElementById('btn-handleLocation').addEventListener('click', game.handleLocation);
+    document.getElementById('btn-compareLocation').addEventListener('click', game.compareLocation("JD"));
+
   </script>
 </body>
 </html>
