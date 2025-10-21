@@ -3,9 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Nivel 1</title>
+  <title>Home</title>
   <link rel="stylesheet" href="style.css">
-  <script src="game.js" defer></script>
+ 
 </head>
 <body>
   <div class="container">
@@ -17,22 +17,29 @@
       <div class="stat">⏳ Tiempo: <span id="stat-tiempo"></span></div>
     </div>
 
-    <img src="assets/cafe.jpg" alt="inicio">
+    <img src="assets/images/inicio.webp" alt="inicio">
     <p>Empieza la aventura...</p>
 
-    <button onclick="goTo()">Empezar</button>
-    <button onclick="goToGPS()">GPS</button>
+    <button id="btn-empezar">Empezar</button>
+    <button id="btn-gps">GPS</button>
  
   </div>
 
   <!-- importante definir el src, para cargar las funciones adecuadas -->
-  <script src="game.js"></script> 
-  <script>
-    resetStat()
-    function goTo() {      
-      window.location.href = "nivel.html?id=1";
+  
+  <script type="module">
+    import * as game from "./game.js";
+    game.resetStat();
+    function goTo() { 
+      window.location.href = "nivel.html?id=JD";
     }
-    
+    function goToGPS() {        
+        window.location.href = "gps-test.html";
+    }
+    // 3. Adjuntar los event listeners (la mejor práctica)
+    document.getElementById('btn-empezar').addEventListener('click', goTo);
+    document.getElementById('btn-gps').addEventListener('click', goToGPS);
+
   </script>
 </body>
 </html>

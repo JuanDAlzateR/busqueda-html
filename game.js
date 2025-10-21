@@ -1,59 +1,12 @@
-// ==================== CONFIGURACIÓN DE NIVELES ====================
-const LEVELS = {
-  "JD": {
-    text: "💌 Pista 1:\nEl lugar donde comenzó todo...",
-    password: "cafe",
-    next: ["2A", "2B"],
-    image: "assets/images/perritos.jpg",
-    reward: {
-      text: "¡Ganaste +2 puntos de Amor! ❤️",
-      image: "assets/images/reward_1.jpeg",},
-    gps: {
-      lat: 6.2080,  
-      lon: -75.6010,},
-  },
-  "Melisa": {
-    text: "🌳 Pista 2A:\nBusca el árbol donde oramos juntos por primera vez.",
-    password: "fe",
-    next: ["final"],
-    image: "assets/images/corazon.jpg",
-    reward: {
-      text: "¡Ganaste +2 puntos de Amor! ❤️",
-      image: "assets/images/reward_heart.png",},
-    gps: {
-      lat: 6.1729,  
-      lon: -75.5882,},
-  },
-  "CP": {
-    text: "☕ Pista 2B:\nRecuerda aquel café donde te reíste sin parar.",
-    password: "risa",
-    next: ["final"],
-    image: "assets/images/corazon.png",
-    reward: {
-      text: "¡Ganaste +2 puntos de Amor! ❤️",
-      image: "assets/images/reward_heart.png",},
-    gps: {
-      lat: 6.2080,  
-      lon: -75.6010,},
-  },
-  "final": {
-    text: "💍 Has completado la carrera del amor. Prepárate para el gran momento.",
-    password: "?",
-    next: [],
-    image: "assets/images/corazon.png",
-    reward: {
-      text: "¡Ganaste +2 puntos de Amor! ❤️",
-      image: "assets/images/reward_heart.png",},
-    gps: {
-      lat: 6.2080,  
-      lon: -75.6010,},
-  },
-};
-//6.207995, -75.600965 JD
-//6.172938, -75.588226 Melisa
+import { LEVELS } from "./levels.js";
 
 // ==================== ESTADÍSTICAS ====================
-function loadStats() {
+function setLoadStat(id, value) {
+  const element = document.getElementById(id);
+  if (element) element.innerText = value;
+}
+
+export function loadStats() {
   const stats = JSON.parse(localStorage.getItem("stats")) || {
     amor: 0,
     fe: 0,
@@ -65,10 +18,10 @@ function loadStats() {
   document.getElementById("stat-fe").innerText = stats.fe;
   document.getElementById("stat-dinero").innerText = stats.dinero;
   document.getElementById("stat-tiempo").innerText = stats.tiempo;
-  document.getElementById("stat-acciones").innerText = stats.acciones;
+  setLoadStat("stat-acciones",stats.acciones);
 }
 
-function modifyStat(stat, value) {
+export function modifyStat(stat, value) {
   const stats = JSON.parse(localStorage.getItem("stats")) || {
     amor: 0,
     fe: 0,
@@ -81,7 +34,7 @@ function modifyStat(stat, value) {
   loadStats();
 }
 
-function setStat(stat, value) {
+export function setStat(stat, value) {
   const stats = JSON.parse(localStorage.getItem("stats")) || {
     amor: 0,
     fe: 0,
@@ -94,12 +47,12 @@ function setStat(stat, value) {
   loadStats();
 }
 
-function getStat(stat) {
+export function getStat(stat) {
   const stats = JSON.parse(localStorage.getItem("stats"))
   return stats?.[stat] ?? -1;
 }
 
-function resetStat() {
+export function resetStat() {
   const stats = {
     amor: 5,
     fe: 5,
@@ -112,7 +65,7 @@ function resetStat() {
 }
 
 // ==================== SNACKBAR ====================
-function showSnackbar(message,time=4000,permanent=false) {
+export function showSnackbar(message,time=4000,permanent=false) {
   const snackbar = document.createElement("div");
   snackbar.className = "snackbar";
   snackbar.innerHTML = `
@@ -134,7 +87,7 @@ function showSnackbar(message,time=4000,permanent=false) {
 }
 
 // ==================== QR ====================
-function goToQR(currentLevel) {
+export function goToQR(currentLevel) {
   if(getStat("acciones")>0){
     localStorage.setItem("previous_level", currentLevel);
     setTimeout(() =>{window.location.href = "qr.html"},1000);
@@ -145,7 +98,7 @@ function goToQR(currentLevel) {
 }
 
 // ==================== GPS ====================
-function goToGPS(currentLevel) {
+export function goToGPS(currentLevel) {
   localStorage.setItem("previous_level", currentLevel);
   window.location.href = "gps-test.html";
 
@@ -153,7 +106,7 @@ function goToGPS(currentLevel) {
 
 
 // ==================== CONFIRMAR RESPUESTA ====================
-function confirmPassword(levelId) {
+export function confirmPassword(levelId) {
   const input = document.getElementById("password-input").value.trim().toLowerCase();
   const level = LEVELS[levelId];
   if (!input) {
@@ -184,9 +137,9 @@ function confirmPassword(levelId) {
 }
 
 // ==================== CARGA DE NIVEL ====================
-function loadLevel() {
+export function loadLevel() {
   const params = new URLSearchParams(window.location.search);
-  const id = params.get("id") || "1"; // Nivel por defecto
+  const id = params.get("id") || "JD"; // Nivel por defecto
   const level = LEVELS[id];
 
   if (!level) {
@@ -202,25 +155,10 @@ function loadLevel() {
 
   loadStats();
 
-  // Verifica si hay resultado de escaneo pendiente
-  const last = localStorage.getItem("last_qr");
-  if (last) {
-    if (last.toLowerCase() === level.password.toLowerCase()) {
-      modifyStat("amor", 2);
-      showSnackbar("¡Código correcto! ❤️");
-      localStorage.removeItem("last_qr");
-      if (level.next) {
-        setTimeout(() => (window.location.href = `nivel.html?id=${level.next}`), 2000);
-      }
-    } else {
-      showSnackbar("Código incorrecto 😅");
-      localStorage.removeItem("last_qr");
-    }
-  }
 }
 
 // ==================== POPUP PARA ELEGIR RUTA ====================
-function showNextLevelDialog(nextLevels) {
+export function showNextLevelDialog(nextLevels) {
   // Crear el fondo oscuro
   const overlay = document.createElement("div");
   overlay.className = "overlay";
@@ -257,7 +195,7 @@ function showNextLevelDialog(nextLevels) {
 }
 
 // ==================== POPUP PARA RECOMPENSA ====================
-function showRewardDialog(level, onContinue) {
+export function showRewardDialog(level, onContinue) {
   const overlay = document.createElement("div");
   overlay.className = "overlay";
 
@@ -293,7 +231,7 @@ function showRewardDialog(level, onContinue) {
 }
 
 // ==================== FUNCION GPS ====================
-function getLocation() {
+export function getLocation() {
   showSnackbar("activando gps, favor esperar unos segundos...");
   return new Promise((resolve, reject) =>{
     if ("geolocation" in navigator) {
@@ -320,7 +258,7 @@ function getLocation() {
   });
 }
 
-async function handleLocation() {
+export async function handleLocation() {
   try {
     const { lat, lon } = await getLocation();
     console.log("Ubicación obtenida:", lat, lon);
@@ -331,7 +269,7 @@ async function handleLocation() {
   }
 }
 
-async function compareLocation(levelId) {
+export async function compareLocation(levelId) {
   const tolerance = 0.00005;
   const level = LEVELS[levelId];
 
@@ -352,7 +290,7 @@ async function compareLocation(levelId) {
 
 }
 
-function diferenceLocation(lat1,lat2,lon1,lon2,tolerance) {
+export function diferenceLocation(lat1,lat2,lon1,lon2,tolerance) {
   const difLat=Math.abs(lat1-lat2);
   const difLon=Math.abs(lon1-lon2);
   showSnackbar(`Lat: ${difLat.toFixed(5)},  Lon: ${difLon.toFixed(5)}`,0,true);
@@ -360,13 +298,13 @@ function diferenceLocation(lat1,lat2,lon1,lon2,tolerance) {
 }
 
 // ==================== FUNCION GPS ====================
-function diferenceGPS(lat1,lat2,lon1,lon2) {
+export function diferenceGPS(lat1,lat2,lon1,lon2) {
   const difLat=Math.abs(lat1-lat2);
   const difLon=Math.abs(lon1-lon2);
   return {difLat,difLon};
 }
 
-async function compareLocationGPS(levelId) {
+export async function compareLocationGPS(levelId) {
   const tolerance = 0.00005;
   const level = LEVELS[levelId];
   showSnackbar("debug:: level: "+levelId,0,true);
