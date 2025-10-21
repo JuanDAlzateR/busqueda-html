@@ -1,6 +1,6 @@
 // ==================== CONFIGURACIÓN DE NIVELES ====================
 const LEVELS = {
-  "1": {
+  "JD": {
     text: "💌 Pista 1:\nEl lugar donde comenzó todo...",
     password: "cafe",
     next: ["2A", "2B"],
@@ -12,7 +12,7 @@ const LEVELS = {
       lat: 6.2080,  
       lon: -75.6010,},
   },
-  "2A": {
+  "Melisa": {
     text: "🌳 Pista 2A:\nBusca el árbol donde oramos juntos por primera vez.",
     password: "fe",
     next: ["final"],
@@ -21,10 +21,10 @@ const LEVELS = {
       text: "¡Ganaste +2 puntos de Amor! ❤️",
       image: "assets/images/reward_heart.png",},
     gps: {
-      lat: 6.2080,  
-      lon: -75.6010,},
+      lat: 6.1729,  
+      lon: -75.5882,},
   },
-  "2B": {
+  "CP": {
     text: "☕ Pista 2B:\nRecuerda aquel café donde te reíste sin parar.",
     password: "risa",
     next: ["final"],
@@ -49,7 +49,8 @@ const LEVELS = {
       lon: -75.6010,},
   },
 };
-//6.207995, -75.600965 
+//6.207995, -75.600965 JD
+//6.172938, -75.588226 Melisa
 
 // ==================== ESTADÍSTICAS ====================
 function loadStats() {
@@ -356,4 +357,28 @@ function diferenceLocation(lat1,lat2,lon1,lon2,tolerance) {
   const difLon=Math.abs(lon1-lon2);
   showSnackbar(`Lat: ${difLat.toFixed(5)},  Lon: ${difLon.toFixed(5)}`,0,true);
   return (difLat<=tolerance) && (difLon<=tolerance);
+}
+
+// ==================== FUNCION GPS ====================
+function diferenceGPS(lat1,lat2,lon1,lon2) {
+  const difLat=Math.abs(lat1-lat2);
+  const difLon=Math.abs(lon1-lon2);
+  return {difLat,difLon};
+}
+
+async function compareLocationGPS(levelId) {
+  const tolerance = 0.00005;
+  const level = LEVELS[levelId];
+  showSnackbar("debug:: level: "+levelId,0,true);
+  try {
+    const { lat, lon } = await getLocation();    
+    const {difLat,difLon}=diferenceGPS(lat,level.gps.lat,lon,level.gps.lon)
+    showSnackbar(`level: ${levelId}  lat: ${difLat.toFixed(5)}  lon: ${difLon.toFixed(5)}`,0,true);
+
+  } catch (err) {
+    console.error("Error:", err.message);
+    showSnackbar("❌ No se pudo obtener la ubicación.");
+    return false;
+  }
+
 }

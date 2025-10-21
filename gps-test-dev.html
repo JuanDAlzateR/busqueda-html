@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>GPS</title>
+  <title>GPS TEST DEV</title>
   <link rel="stylesheet" href="style.css">
 
 </head>
@@ -20,29 +20,30 @@
     <img src="assets/cafe.jpg" alt="gps">
     <p>Herramienta de ayuda para GPS</p>
 
+    <div class="input-box">
+      <input id="text-input" type="text" placeholder="Escribe la respuesta..." />
+      <button id="compare-gps" onclick="comparar()">Buscar</button>
+    </div>
+
     <button onclick="cancelar()">Regresar</button>
-    <button onclick="devGps()">dev gps</button>
-    <button onclick="handleLocation()">handle</button>
-    <button onclick="compareLocation('JD')">compare</button>
+
   </div>
 
   <!-- importante definir el src, para cargar las funciones adecuadas -->
   <script src="game.js"></script> 
   <script>
     function cancelar() {
-      const previous_level=localStorage.getItem("previous_level");
-      if((""+previous_level)!="undefined"){
-        window.location.href = ("nivel.html?id="+previous_level);
-      }else{
-        window.location.href = ("index.html");
-      }      
-    }
+      window.location.href = ("gps-test.html");
 
-    function devGps() {
-      window.location.href = ("gps-test-dev.html");
+      }
+      
+    function comparar() {
+      const input = document.getElementById("text-input").value.trim();
+      compareLocationGPS(input)
 
-    }
-    
+      }  
+
+    const input = document.getElementById("password-input").value.trim().toLowerCase();
     
   </script>
 </body>
