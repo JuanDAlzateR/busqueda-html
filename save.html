@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Save</title>
+  <link rel="stylesheet" href="style.css">
+ 
+</head>
+<body>
+  <div class="container">
+    <h1>Save Game ☕</h1>
+    <div class="stats">
+      <div class="stat">❤️ Amor: <span id="stat-amor"></span></div>
+      <div class="stat">✝️ Fe: <span id="stat-fe"></span></div>
+      <div class="stat">💰 Dinero: <span id="stat-dinero"></span></div>
+      <div class="stat">⏳ Tiempo: <span id="stat-tiempo"></span></div>
+    </div>
+
+    <img src="assets/images/inicio.webp" alt="inicio">
+    <p>Aquí puedes guardar o cargar el juego...</p>
+
+    <button id="btn-guardar">Guardar</button>
+    <button id="btn-cargar">Cargar</button>
+    <button id="btn-cancelar">Cancelar</button>
+
+ 
+  </div>
+
+  <!-- importante definir el src, para cargar las funciones adecuadas -->
+  
+  <script type="module">
+    import * as game from "./game.js";
+    function cancelar() {
+      window.location.href = ("nivel.html?id="+localStorage.getItem("previous_level")) || "index.html";
+    }
+ 
+    // 3. Adjuntar los event listeners (la mejor práctica)
+    document.getElementById('btn-guardar').addEventListener('click', game.save(localStorage.getItem("previous_level")));
+    document.getElementById('btn-cargar').addEventListener('click', game.load);
+    document.getElementById('btn-cancelar').addEventListener('click', cancelar);
+
+  </script>
+</body>
+</html>
