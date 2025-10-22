@@ -153,8 +153,10 @@ export function loadLevel() {
   document.querySelector("#level-text").innerHTML = level.text.replace(/\n/g, "<br>");
   document.querySelector("#scan-btn").onclick = () => goToQR(id);
   document.querySelector("#confirm-btn").onclick = () => confirmPassword(id);
-  document.querySelector("#btn-menu-guardar").onclick = () => showSaveDialog();
-
+  document.querySelector("#btn-menu-guardar").onclick = () => {
+    localStorage.setItem("previous_level",id);
+    window.location.href = `save.html`;
+  }
   loadStats();
 
 }
@@ -342,6 +344,23 @@ export function loadGame() {
   }
 }
 
+export function downloadSave() {
+  const data = localStorage.getItem("savegame");
+  const blob = new Blob([data], { type: "application/json" });
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = "savegame.json";
+  a.click();
+}
+
+export function uploadSave(file) {
+  const reader = new FileReader();
+  reader.onload = () => localStorage.setItem("savegame", reader.result);
+  reader.readAsText(file);
+  console.log("loaded: "+file);
+  console.log("loaded: "+localStorage.getItem("savegame"));
+}
+
 // ==================== POPUP GUARDAR ====================
 export function showSaveDialog() {
   // Crear el fondo oscuro
@@ -358,7 +377,7 @@ export function showSaveDialog() {
   const buttons = document.createElement("div");
   buttons.className = "dialog-buttons";
 
-  const btn = document.createElement("button");
+  let btn = document.createElement("button");
   btn.innerText = `Guardar`;
   btn.onclick = () => {
     overlay.remove();
@@ -369,7 +388,7 @@ export function showSaveDialog() {
   const data = JSON.parse(localStorage.getItem("savegame"));
 
   if (data) {
-  const btn = document.createElement("button");
+  btn = document.createElement("button");
   btn.innerText = `Cargar: nivel ${data.level}`;
   btn.onclick = () => {
     overlay.remove();
@@ -377,6 +396,28 @@ export function showSaveDialog() {
   };
   buttons.appendChild(btn);
   }
+
+  btn = document.createElement("button");
+  btn.innerText = `Download savegame`;
+  btn.onclick = () => {
+    overlay.remove();
+    downloadSave();
+  };
+  buttons.appendChild(btn);
+
+  btn = document.createElement("button");
+  btn.innerText = `Upload savegame`;
+  btn.onclick = () => {
+    overlay.remove();
+    downloadSave();
+  };
+  buttons.appendChild(btn);
+
+ 
+
+
+
+
 
   const closeBtn = document.createElement("button");
   closeBtn.innerText = "Cancelar";
@@ -388,3 +429,6 @@ export function showSaveDialog() {
   overlay.appendChild(dialog);
   document.body.appendChild(overlay);
 }
+
+
+

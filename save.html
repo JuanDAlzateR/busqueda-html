@@ -21,9 +21,11 @@
     <p>Aquí puedes guardar o cargar el juego...</p>
 
     <button id="btn-guardar">Guardar</button>
-    <button id="btn-cargar">Cargar</button>
-    <button id="btn-cancelar">Cancelar</button>
-
+    <button id="btn-cargar">Cargar</button>    
+    <button id="btn-download">💾 Guardar partida</button>
+    <input type="file" id="uploadInput" accept=".json" style="display:none">
+    <button id="btn-upload">📂 Cargar partida</button>
+    <button id="btn-cancelar">Regresar</button>
  
   </div>
 
@@ -31,14 +33,26 @@
   
   <script type="module">
     import * as game from "./game.js";
+    console.log(`loaded save.html`);
+    setTimeout(() => {console.log(`loaded save.html`);},10000);
     function cancelar() {
+     console.log(`click on btn-cancelar`);
       window.location.href = ("nivel.html?id="+localStorage.getItem("previous_level")) || "index.html";
     }
  
     // 3. Adjuntar los event listeners (la mejor práctica)
-    document.getElementById('btn-guardar').addEventListener('click', game.save(localStorage.getItem("previous_level")));
-    document.getElementById('btn-cargar').addEventListener('click', game.load);
+    document.getElementById('btn-guardar').addEventListener('click', game.saveGame);
+    document.getElementById('btn-cargar').addEventListener('click', game.loadGame);
     document.getElementById('btn-cancelar').addEventListener('click', cancelar);
+
+    document.getElementById('btn-download').addEventListener('click', game.downloadSave);
+    document.getElementById("btn-upload").onclick = () => {
+      document.getElementById("uploadInput").click();
+    };
+    document.getElementById("uploadInput").addEventListener("change", (e) => {
+      const file = e.target.files[0];
+      if (file) game.uploadSave(file);
+    });
 
   </script>
 </body>
