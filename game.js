@@ -141,6 +141,7 @@ export function loadLevel() {
   const params = new URLSearchParams(window.location.search);
   const id = params.get("id") || "JD"; // Nivel por defecto
   const level = LEVELS[id];
+  localStorage.setItem("current_level", id) //guardar el id del nivel actual
 
   if (!level) {
     document.querySelector(".container").innerHTML = "<h1>Nivel no encontrado 😢</h1>";
@@ -152,6 +153,7 @@ export function loadLevel() {
   document.querySelector("#level-text").innerHTML = level.text.replace(/\n/g, "<br>");
   document.querySelector("#scan-btn").onclick = () => goToQR(id);
   document.querySelector("#confirm-btn").onclick = () => confirmPassword(id);
+  document.querySelector("#btn-menu-guardar").onclick = () => showSaveDialog();
 
   loadStats();
 
@@ -307,7 +309,7 @@ export function diferenceGPS(lat1,lat2,lon1,lon2) {
 export async function compareLocationGPS(levelId) {
   const tolerance = 0.00005;
   const level = LEVELS[levelId];
-  showSnackbar("debug:: level: "+levelId,0,true);
+  //showSnackbar("debug:: level: "+levelId,0,true);
   try {
     const { lat, lon } = await getLocation();    
     const {difLat,difLon}=diferenceGPS(lat,level.gps.lat,lon,level.gps.lon)
@@ -319,4 +321,70 @@ export async function compareLocationGPS(levelId) {
     return false;
   }
 
+}
+
+// ==================== SAVE GAME ====================
+export function saveGame() {
+  const gameState = {    
+    level: localStorage.getItem("current_level"),
+    stats: JSON.parse(localStorage.getItem("stats"))
+  };
+  localStorage.setItem("savegame", JSON.stringify(gameState));
+  showSnackbar("Juego guardado. Nivel: "+gameState.level);
+}
+
+export function loadGame() {
+  const data = JSON.parse(localStorage.getItem("savegame"));
+  if (data) {
+    //localStorage.setItem("current_level", data.level); //no hay necesidad pues loadlevel lo guarda.
+    localStorage.setItem("stats", JSON.stringify(data.stats));
+    window.location.href = `nivel.html?id=${data.level}`;
+  }
+}
+
+// ==================== POPUP GUARDAR ====================
+export function showSaveDialog() {
+  // Crear el fondo oscuro
+  const overlay = document.createElement("div");
+  overlay.className = "overlay";
+
+  // Crear el cuadro del diálogo
+  const dialog = document.createElement("div");
+  dialog.className = "dialog";
+
+  const title = document.createElement("h2");
+  title.innerText = "Puedes guardar o cargar el juego ❤️";
+
+  const buttons = document.createElement("div");
+  buttons.className = "dialog-buttons";
+
+  const btn = document.createElement("button");
+  btn.innerText = `Guardar`;
+  btn.onclick = () => {
+    overlay.remove();
+    saveGame();
+  };
+  buttons.appendChild(btn);
+
+  const data = JSON.parse(localStorage.getItem("savegame"));
+
+  if (data) {
+  const btn = document.createElement("button");
+  btn.innerText = `Cargar: nivel ${data.level}`;
+  btn.onclick = () => {
+    overlay.remove();
+    loadGame();
+  };
+  buttons.appendChild(btn);
+  }
+
+  const closeBtn = document.createElement("button");
+  closeBtn.innerText = "Cancelar";
+  closeBtn.onclick = () => overlay.remove();
+
+  dialog.appendChild(title);
+  dialog.appendChild(buttons);
+  dialog.appendChild(closeBtn);
+  overlay.appendChild(dialog);
+  document.body.appendChild(overlay);
 }

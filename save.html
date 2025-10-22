@@ -3,13 +3,13 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Homev1.0.0</title>
+  <title>Save</title>
   <link rel="stylesheet" href="style.css">
  
 </head>
 <body>
   <div class="container">
-    <h1>Home v1.0.0☕</h1>
+    <h1>Save Game ☕</h1>
     <div class="stats">
       <div class="stat">❤️ Amor: <span id="stat-amor"></span></div>
       <div class="stat">✝️ Fe: <span id="stat-fe"></span></div>
@@ -18,10 +18,12 @@
     </div>
 
     <img src="assets/images/inicio.webp" alt="inicio">
-    <p>Empieza la aventura...</p>
+    <p>Aquí puedes guardar o cargar el juego...</p>
 
-    <button id="btn-empezar">Empezar</button>
-    <button id="btn-gps">GPS</button>
+    <button id="btn-guardar">Guardar</button>
+    <button id="btn-cargar">Cargar</button>
+    <button id="btn-cancelar">Cancelar</button>
+
  
   </div>
 
@@ -29,16 +31,14 @@
   
   <script type="module">
     import * as game from "./game.js";
-    game.resetStat();
-    function goTo() { 
-      window.location.href = "nivel.html?id=JD";
+    function cancelar() {
+      window.location.href = ("nivel.html?id="+localStorage.getItem("previous_level")) || "index.html";
     }
-    function goToGPS() {        
-        window.location.href = "gps-test.html";
-    }
+ 
     // 3. Adjuntar los event listeners (la mejor práctica)
-    document.getElementById('btn-empezar').addEventListener('click', goTo);
-    document.getElementById('btn-gps').addEventListener('click', goToGPS);
+    document.getElementById('btn-guardar').addEventListener('click', game.save(localStorage.getItem("previous_level")));
+    document.getElementById('btn-cargar').addEventListener('click', game.load);
+    document.getElementById('btn-cancelar').addEventListener('click', cancelar);
 
   </script>
 </body>
