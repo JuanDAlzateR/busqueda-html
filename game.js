@@ -355,7 +355,7 @@ export function loadGame() {
     localStorage.setItem("stats", JSON.stringify(data.stats));
     setTimeout(() => {
     window.location.href = `nivel.html?id=${data.level}`;
-    },10000);
+    },100); //se deja el timeout, por si se requiere emplear despues para debug
   }
 }
 
@@ -386,69 +386,5 @@ export function uploadSave(file) {
   
 
 }
-
-// ==================== POPUP GUARDAR ====================
-export function showSaveDialog() {
-  // Crear el fondo oscuro
-  const overlay = document.createElement("div");
-  overlay.className = "overlay";
-
-  // Crear el cuadro del diálogo
-  const dialog = document.createElement("div");
-  dialog.className = "dialog";
-
-  const title = document.createElement("h2");
-  title.innerText = "Puedes guardar o cargar el juego ❤️";
-
-  const buttons = document.createElement("div");
-  buttons.className = "dialog-buttons";
-
-  let btn = document.createElement("button");
-  btn.innerText = `Guardar`;
-  btn.onclick = () => {
-    overlay.remove();
-    saveGame();
-  };
-  buttons.appendChild(btn);
-
-  const data = JSON.parse(localStorage.getItem("savegame"));
-
-  if (data) {
-  btn = document.createElement("button");
-  btn.innerText = `Cargar: nivel ${data.level}`;
-  btn.onclick = () => {
-    overlay.remove();
-    loadGame();
-  };
-  buttons.appendChild(btn);
-  }
-
-  btn = document.createElement("button");
-  btn.innerText = `Download savegame`;
-  btn.onclick = () => {
-    overlay.remove();
-    downloadSave();
-  };
-  buttons.appendChild(btn);
-
-  btn = document.createElement("button");
-  btn.innerText = `Upload savegame`;
-  btn.onclick = () => {
-    overlay.remove();
-    downloadSave();
-  };
-  buttons.appendChild(btn);
-
-  const closeBtn = document.createElement("button");
-  closeBtn.innerText = "Cancelar";
-  closeBtn.onclick = () => overlay.remove();
-
-  dialog.appendChild(title);
-  dialog.appendChild(buttons);
-  dialog.appendChild(closeBtn);
-  overlay.appendChild(dialog);
-  document.body.appendChild(overlay);
-}
-
 
 
