@@ -40,9 +40,11 @@
     function goTo() { 
       const data = JSON.parse(localStorage.getItem("savegame"));
       if (data) {
-        loadGame();
-      }
+        game.showSnackbar("Cargando juego...")
+        game.loadGame();
+      }else{
       game.showSnackbar("No hay un juego previo para continuar");
+      }
     }
     function goToGPS() {        
         window.location.href = "gps-test.html";
