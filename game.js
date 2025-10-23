@@ -149,10 +149,12 @@ export function confirmPassword(levelId) {
         if (Array.isArray(level.next) && level.next.length > 1) {
           showNextLevelDialog(level.next);
         } else if (Array.isArray(level.next) && level.next.length === 1) {
-          saveGame(level.next[0]) //puede que nunca ocurra
-          console.log(level.next[0])
+          localStorage.setItem("save_level",level.next[0]);
+          saveGame(); //Ocurre en el penúltimo nivel
+          console.log(level.next[0]);
+          setTimeout(() => {
           window.location.href = `nivel.html?id=${level.next[0]}`;
-          
+          },10000);
         } else {
           showSnackbar("🎉 ¡Has completado la aventura!");
         }
@@ -187,11 +189,12 @@ export function showNextLevelDialog(nextLevels) {
     btn.innerText = `Ir a nivel ${lvl}`;
     btn.onclick = () => {
       overlay.remove();
-      saveGame(String(lvl));
+      localStorage.setItem("save_level",lvl),
+      saveGame();
       console.log(lvl);
        setTimeout(() => {
       window.location.href = `nivel.html?id=${lvl}`;
-       },20000);
+       },10000);
     };
     buttons.appendChild(btn);
   });
@@ -337,7 +340,7 @@ export async function compareLocationGPS(levelId) {
 // ==================== SAVE GAME ====================
 export function saveGame() {
   const gameState = {    
-    level: localStorage.getItem("previous_level"),
+    level: localStorage.getItem("save_level"),
     stats: JSON.parse(localStorage.getItem("stats"))
   };
   localStorage.setItem("savegame", JSON.stringify(gameState));
@@ -350,7 +353,9 @@ export function loadGame() {
   if (data) {
     //localStorage.setItem("current_level", data.level); //no hay necesidad pues loadlevel lo guarda.
     localStorage.setItem("stats", JSON.stringify(data.stats));
+    setTimeout(() => {
     window.location.href = `nivel.html?id=${data.level}`;
+    },10000);
   }
 }
 
@@ -367,11 +372,19 @@ export function downloadSave() {
 
 export function uploadSave(file) {
   const reader = new FileReader();
-  reader.onload = () => localStorage.setItem("savegame", reader.result);
-  reader.readAsText(file);
-  console.log("loaded: "+file);
-  console.log("loaded: "+localStorage.getItem("savegame"));
-  loadGame();
+  reader.onload = () => {
+    console.log("result: "+reader.result);
+    localStorage.setItem("savegame", reader.result);    
+  }
+  reader.readAsText(file); //al terminar la lectura activa el evneto onload
+  console.log("loaded file: "+file.name);
+ 
+  setTimeout(() => {
+    console.log("loaded savegame: "+localStorage.getItem("savegame"));
+    loadGame(); //importante: se requiere un pequeño delay para esperar a que finalice el reader.
+    },100);
+  
+
 }
 
 // ==================== POPUP GUARDAR ====================

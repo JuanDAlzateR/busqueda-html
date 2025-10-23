@@ -40,7 +40,7 @@
     function goTo() { 
       const data = JSON.parse(localStorage.getItem("savegame"));
       if (data) {
-        loadGame();
+        game.loadGame();
       }
       game.showSnackbar("No hay un juego previo para continuar");
     }
