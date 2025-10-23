@@ -1,5 +1,17 @@
 // ==================== CONFIGURACIÓN DE NIVELES ====================
 const LEVELS = {
+    "Inicio": {
+    text: "💌 Pista 0:\nEl lugar donde comenzó todo...",
+    password: "cafe1",
+    next: ["Melisa", "JD"],
+    image: "assets/images/perritos.jpg",
+    reward: {
+      text: "¡Ganaste +2 puntos de Amor! ❤️",
+      image: "assets/images/reward_1.jpeg",},
+    gps: {
+      lat: 6.2080,  
+      lon: -75.6010,},
+  },
   "JD": {
     text: "💌 Pista 1:\nEl lugar donde comenzó todo...",
     password: "cafe2",

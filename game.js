@@ -64,6 +64,31 @@ export function resetStat() {
   loadStats();
 }
 
+// ==================== CARGA DE NIVEL ====================
+export function loadLevel() {
+  const params = new URLSearchParams(window.location.search);
+  const id = params.get("id") || "JD"; // Nivel por defecto
+  const level = LEVELS[id];
+  localStorage.setItem("current_level", id) //guardar el id del nivel actual
+
+  if (!level) {
+    document.querySelector(".container").innerHTML = "<h1>Nivel no encontrado 😢</h1>";
+    return;
+  }
+
+  document.querySelector("h1").innerText = `Nivel ${id}`;
+  document.querySelector("#level-image").src = level.image;
+  document.querySelector("#level-text").innerHTML = level.text.replace(/\n/g, "<br>");
+  document.querySelector("#scan-btn").onclick = () => goToQR(id);
+  document.querySelector("#confirm-btn").onclick = () => confirmPassword(id);
+  document.querySelector("#btn-menu-guardar").onclick = () => {
+    localStorage.setItem("previous_level",id);
+    window.location.href = `save.html`;
+  }
+  loadStats();
+
+}
+
 // ==================== SNACKBAR ====================
 export function showSnackbar(message,time=4000,permanent=false) {
   const snackbar = document.createElement("div");
@@ -124,7 +149,10 @@ export function confirmPassword(levelId) {
         if (Array.isArray(level.next) && level.next.length > 1) {
           showNextLevelDialog(level.next);
         } else if (Array.isArray(level.next) && level.next.length === 1) {
+          saveGame(level.next[0]) //puede que nunca ocurra
+          console.log(level.next[0])
           window.location.href = `nivel.html?id=${level.next[0]}`;
+          
         } else {
           showSnackbar("🎉 ¡Has completado la aventura!");
         }
@@ -136,30 +164,7 @@ export function confirmPassword(levelId) {
 
 }
 
-// ==================== CARGA DE NIVEL ====================
-export function loadLevel() {
-  const params = new URLSearchParams(window.location.search);
-  const id = params.get("id") || "JD"; // Nivel por defecto
-  const level = LEVELS[id];
-  localStorage.setItem("current_level", id) //guardar el id del nivel actual
 
-  if (!level) {
-    document.querySelector(".container").innerHTML = "<h1>Nivel no encontrado 😢</h1>";
-    return;
-  }
-
-  document.querySelector("h1").innerText = `Nivel ${id}`;
-  document.querySelector("#level-image").src = level.image;
-  document.querySelector("#level-text").innerHTML = level.text.replace(/\n/g, "<br>");
-  document.querySelector("#scan-btn").onclick = () => goToQR(id);
-  document.querySelector("#confirm-btn").onclick = () => confirmPassword(id);
-  document.querySelector("#btn-menu-guardar").onclick = () => {
-    localStorage.setItem("previous_level",id);
-    window.location.href = `save.html`;
-  }
-  loadStats();
-
-}
 
 // ==================== POPUP PARA ELEGIR RUTA ====================
 export function showNextLevelDialog(nextLevels) {
@@ -182,7 +187,11 @@ export function showNextLevelDialog(nextLevels) {
     btn.innerText = `Ir a nivel ${lvl}`;
     btn.onclick = () => {
       overlay.remove();
+      saveGame(String(lvl));
+      console.log(lvl);
+       setTimeout(() => {
       window.location.href = `nivel.html?id=${lvl}`;
+       },20000);
     };
     buttons.appendChild(btn);
   });
@@ -328,11 +337,12 @@ export async function compareLocationGPS(levelId) {
 // ==================== SAVE GAME ====================
 export function saveGame() {
   const gameState = {    
-    level: localStorage.getItem("current_level"),
+    level: localStorage.getItem("previous_level"),
     stats: JSON.parse(localStorage.getItem("stats"))
   };
   localStorage.setItem("savegame", JSON.stringify(gameState));
-  showSnackbar("Juego guardado. Nivel: "+gameState.level);
+  console.log("save:"+JSON.stringify(gameState));
+  //showSnackbar("Juego guardado. Nivel: "+gameState.level);
 }
 
 export function loadGame() {
@@ -345,7 +355,9 @@ export function loadGame() {
 }
 
 export function downloadSave() {
+  saveGame();
   const data = localStorage.getItem("savegame");
+  console.log("data:"+data);
   const blob = new Blob([data], { type: "application/json" });
   const a = document.createElement("a");
   a.href = URL.createObjectURL(blob);
@@ -359,6 +371,7 @@ export function uploadSave(file) {
   reader.readAsText(file);
   console.log("loaded: "+file);
   console.log("loaded: "+localStorage.getItem("savegame"));
+  loadGame();
 }
 
 // ==================== POPUP GUARDAR ====================
@@ -412,12 +425,6 @@ export function showSaveDialog() {
     downloadSave();
   };
   buttons.appendChild(btn);
-
- 
-
-
-
-
 
   const closeBtn = document.createElement("button");
   closeBtn.innerText = "Cancelar";
