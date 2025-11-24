@@ -18,7 +18,7 @@ export function loadStats() {
   document.getElementById("stat-fe").innerText = stats.fe;
   document.getElementById("stat-dinero").innerText = stats.dinero;
   document.getElementById("stat-tiempo").innerText = stats.tiempo;
-  setLoadStat("stat-acciones",stats.acciones);
+  setLoadStat("stat-acciones", stats.acciones);
 }
 
 export function modifyStat(stat, value) {
@@ -59,17 +59,27 @@ export function resetStat() {
     dinero: 5,
     tiempo: 5,
     acciones: 1,
-  };  
+  };
   localStorage.setItem("stats", JSON.stringify(stats));
+  localStorage.setItem("visited_places", JSON.stringify({}));
   loadStats();
 }
 
 // ==================== CARGA DE NIVEL ====================
+export function markPlaceAsVisited(id) {
+  const visited = JSON.parse(localStorage.getItem("visited_places")) || {};
+  if (!visited[id]) {
+    visited[id] = 1;
+    localStorage.setItem("visited_places", JSON.stringify(visited));
+  }
+}
+
 export function loadLevel() {
   const params = new URLSearchParams(window.location.search);
   const id = params.get("id") || "JD"; // Nivel por defecto
   const level = LEVELS[id];
   localStorage.setItem("current_level", id) //guardar el id del nivel actual
+  markPlaceAsVisited(id);
 
   if (!level) {
     document.querySelector(".container").innerHTML = "<h1>Nivel no encontrado 😢</h1>";
@@ -82,7 +92,7 @@ export function loadLevel() {
   document.querySelector("#scan-btn").onclick = () => goToQR(id);
   document.querySelector("#confirm-btn").onclick = () => confirmPassword(id);
   document.querySelector("#btn-menu-guardar").onclick = () => {
-    localStorage.setItem("previous_level",id);
+    localStorage.setItem("previous_level", id);
     window.location.href = `save.html`;
   }
   loadStats();
@@ -90,7 +100,7 @@ export function loadLevel() {
 }
 
 // ==================== SNACKBAR ====================
-export function showSnackbar(message,time=4000,permanent=false) {
+export function showSnackbar(message, time = 4000, permanent = false) {
   const snackbar = document.createElement("div");
   snackbar.className = "snackbar";
   snackbar.innerHTML = `
@@ -103,7 +113,7 @@ export function showSnackbar(message,time=4000,permanent=false) {
     snackbar.classList.add("show");
   }, 100); // pequeña pausa para activar animación
 
-  if(!permanent){
+  if (!permanent) {
     setTimeout(() => {
       snackbar.classList.remove("show");
       snackbar.remove();
@@ -113,13 +123,13 @@ export function showSnackbar(message,time=4000,permanent=false) {
 
 // ==================== QR ====================
 export function goToQR(currentLevel) {
-  if(getStat("acciones")>0){
+  if (getStat("acciones") > 0) {
     localStorage.setItem("previous_level", currentLevel);
-    setTimeout(() =>{window.location.href = "qr.html"},1000);
-  }else{
+    setTimeout(() => { window.location.href = "qr.html" }, 1000);
+  } else {
     showSnackbar("Este turno ya no quedan más acciones disponibles");
   }
-    
+
 }
 
 // ==================== GPS ====================
@@ -140,21 +150,21 @@ export function confirmPassword(levelId) {
   }
 
   if (input === level.password.toLowerCase()) {
-    showSnackbar("✅ ¡Respuesta correcta!<br>Haz empleado ❤️ y pasado el nivel",5000);
+    showSnackbar("✅ ¡Respuesta correcta!<br>Haz empleado ❤️ y pasado el nivel", 5000);
     modifyStat("amor", -1);
-    setStat("acciones",1);
+    setStat("acciones", 1);
     setTimeout(() => {
       // Mostrar recompensa primero
       showRewardDialog(level, () => {
         if (Array.isArray(level.next) && level.next.length > 1) {
           showNextLevelDialog(level.next);
         } else if (Array.isArray(level.next) && level.next.length === 1) {
-          localStorage.setItem("save_level",level.next[0]);
+          localStorage.setItem("save_level", level.next[0]);
           saveGame(); //Ocurre en el penúltimo nivel
           console.log(level.next[0]);
           setTimeout(() => {
-          window.location.href = `nivel.html?id=${level.next[0]}`;
-          },10000);
+            window.location.href = `nivel.html?id=${level.next[0]}`;
+          }, 10000);
         } else {
           showSnackbar("🎉 ¡Has completado la aventura!");
         }
@@ -189,12 +199,12 @@ export function showNextLevelDialog(nextLevels) {
     btn.innerText = `Ir a nivel ${lvl}`;
     btn.onclick = () => {
       overlay.remove();
-      localStorage.setItem("save_level",lvl),
-      saveGame();
+      localStorage.setItem("save_level", lvl),
+        saveGame();
       console.log(lvl);
-       setTimeout(() => {
-      window.location.href = `nivel.html?id=${lvl}`;
-       },10000);
+      setTimeout(() => {
+        window.location.href = `nivel.html?id=${lvl}`;
+      }, 10000);
     };
     buttons.appendChild(btn);
   });
@@ -249,7 +259,7 @@ export function showRewardDialog(level, onContinue) {
 // ==================== FUNCION GPS ====================
 export function getLocation() {
   showSnackbar("activando gps, favor esperar unos segundos...");
-  return new Promise((resolve, reject) =>{
+  return new Promise((resolve, reject) => {
     if ("geolocation" in navigator) {
       navigator.geolocation.getCurrentPosition(
         (position) => {
@@ -258,8 +268,8 @@ export function getLocation() {
           console.log(`📍 Tu ubicación: ${lat}, ${lon}`);
           //showSnackbar(`📍 Ubicación detectada: ${lat.toFixed(4)}, ${lon.toFixed(4)}`);
           localStorage.setItem("last_location", JSON.stringify({ lat, lon }));
-          resolve({lat,lon});
-          
+          resolve({ lat, lon });
+
         },
         (error) => {
           console.error("❌ Error obteniendo ubicación:", error.message);
@@ -278,7 +288,7 @@ export async function handleLocation() {
   try {
     const { lat, lon } = await getLocation();
     console.log("Ubicación obtenida:", lat, lon);
-    showSnackbar(`📍handle ${lat.toFixed(6)}, ${lon.toFixed(6)}`,0,true);
+    showSnackbar(`📍handle ${lat.toFixed(6)}, ${lon.toFixed(6)}`, 0, true);
   } catch (err) {
     console.error("Error:", err.message);
     showSnackbar("❌ No se pudo obtener la ubicación.");
@@ -290,11 +300,11 @@ export async function compareLocation(levelId) {
   const level = LEVELS[levelId];
 
   try {
-    const { lat, lon } = await getLocation();    
-    const compare=diferenceLocation(lat,level.gps.lat,lon,level.gps.lon,tolerance);
-    if (compare){
+    const { lat, lon } = await getLocation();
+    const compare = diferenceLocation(lat, level.gps.lat, lon, level.gps.lon, tolerance);
+    if (compare) {
       //showSnackbar("✅Locacion correcta.");
-    }else{
+    } else {
       //showSnackbar("❌ Locación incorrecta.");
     }
     return compare;
@@ -306,18 +316,18 @@ export async function compareLocation(levelId) {
 
 }
 
-export function diferenceLocation(lat1,lat2,lon1,lon2,tolerance) {
-  const difLat=Math.abs(lat1-lat2);
-  const difLon=Math.abs(lon1-lon2);
-  showSnackbar(`Lat: ${difLat.toFixed(5)},  Lon: ${difLon.toFixed(5)}`,0,true);
-  return (difLat<=tolerance) && (difLon<=tolerance);
+export function diferenceLocation(lat1, lat2, lon1, lon2, tolerance) {
+  const difLat = Math.abs(lat1 - lat2);
+  const difLon = Math.abs(lon1 - lon2);
+  showSnackbar(`Lat: ${difLat.toFixed(5)},  Lon: ${difLon.toFixed(5)}`, 0, true);
+  return (difLat <= tolerance) && (difLon <= tolerance);
 }
 
 // ==================== FUNCION GPS ====================
-export function diferenceGPS(lat1,lat2,lon1,lon2) {
-  const difLat=Math.abs(lat1-lat2);
-  const difLon=Math.abs(lon1-lon2);
-  return {difLat,difLon};
+export function diferenceGPS(lat1, lat2, lon1, lon2) {
+  const difLat = Math.abs(lat1 - lat2);
+  const difLon = Math.abs(lon1 - lon2);
+  return { difLat, difLon };
 }
 
 export async function compareLocationGPS(levelId) {
@@ -325,9 +335,9 @@ export async function compareLocationGPS(levelId) {
   const level = LEVELS[levelId];
   //showSnackbar("debug:: level: "+levelId,0,true);
   try {
-    const { lat, lon } = await getLocation();    
-    const {difLat,difLon}=diferenceGPS(lat,level.gps.lat,lon,level.gps.lon)
-    showSnackbar(`level: ${levelId}  lat: ${difLat.toFixed(5)}  lon: ${difLon.toFixed(5)}`,0,true);
+    const { lat, lon } = await getLocation();
+    const { difLat, difLon } = diferenceGPS(lat, level.gps.lat, lon, level.gps.lon)
+    showSnackbar(`level: ${levelId}  lat: ${difLat.toFixed(5)}  lon: ${difLon.toFixed(5)}`, 0, true);
 
   } catch (err) {
     console.error("Error:", err.message);
@@ -339,12 +349,13 @@ export async function compareLocationGPS(levelId) {
 
 // ==================== SAVE GAME ====================
 export function saveGame() {
-  const gameState = {    
+  const gameState = {
     level: localStorage.getItem("save_level"),
-    stats: JSON.parse(localStorage.getItem("stats"))
+    stats: JSON.parse(localStorage.getItem("stats")),
+    visited: JSON.parse(localStorage.getItem("visited_places")) || {}
   };
   localStorage.setItem("savegame", JSON.stringify(gameState));
-  console.log("save:"+JSON.stringify(gameState));
+  console.log("save:" + JSON.stringify(gameState));
   //showSnackbar("Juego guardado. Nivel: "+gameState.level);
 }
 
@@ -353,16 +364,17 @@ export function loadGame() {
   if (data) {
     //localStorage.setItem("current_level", data.level); //no hay necesidad pues loadlevel lo guarda.
     localStorage.setItem("stats", JSON.stringify(data.stats));
+    localStorage.setItem("visited_places", JSON.stringify(data.visited || {}));
     setTimeout(() => {
-    window.location.href = `nivel.html?id=${data.level}`;
-    },100); //se deja el timeout, por si se requiere emplear despues para debug
+      window.location.href = `nivel.html?id=${data.level}`;
+    }, 100); //se deja el timeout, por si se requiere emplear despues para debug
   }
 }
 
 export function downloadSave() {
   saveGame();
   const data = localStorage.getItem("savegame");
-  console.log("data:"+data);
+  console.log("data:" + data);
   const blob = new Blob([data], { type: "application/json" });
   const a = document.createElement("a");
   a.href = URL.createObjectURL(blob);
@@ -373,17 +385,17 @@ export function downloadSave() {
 export function uploadSave(file) {
   const reader = new FileReader();
   reader.onload = () => {
-    console.log("result: "+reader.result);
-    localStorage.setItem("savegame", reader.result);    
+    console.log("result: " + reader.result);
+    localStorage.setItem("savegame", reader.result);
   }
   reader.readAsText(file); //al terminar la lectura activa el evneto onload
-  console.log("loaded file: "+file.name);
- 
+  console.log("loaded file: " + file.name);
+
   setTimeout(() => {
-    console.log("loaded savegame: "+localStorage.getItem("savegame"));
+    console.log("loaded savegame: " + localStorage.getItem("savegame"));
     loadGame(); //importante: se requiere un pequeño delay para esperar a que finalice el reader.
-    },100);
-  
+  }, 100);
+
 
 }
 
