@@ -67,7 +67,7 @@ export function confirmPassword(levelId) {
                         console.log(selectedLevel);
                         setTimeout(() => {
                             window.location.href = `nivel.html?id=${selectedLevel}`;
-                        }, 5000);
+                        }, 2000);
                     });
                 } else if (Array.isArray(level.next) && level.next.length === 1) {
                     localStorage.setItem("save_level", level.next[0]);
@@ -75,7 +75,7 @@ export function confirmPassword(levelId) {
                     console.log(level.next[0]);
                     setTimeout(() => {
                         window.location.href = `nivel.html?id=${level.next[0]}`;
-                    }, 5000);
+                    }, 2000);
                 } else {
                     showSnackbar("🎉 ¡Has completado la aventura!");
                 }
