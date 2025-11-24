@@ -1,13 +1,14 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Escanear QR</title>
   <link rel="stylesheet" href="style.css" />
   <script src="https://unpkg.com/html5-qrcode"></script>
-  <script src="game.js" defer></script>
 </head>
+
 <body>
   <div class="container">
     <h1>Escanea el Código QR 📷</h1>
@@ -16,19 +17,15 @@
     <button onclick="cancelar()">Cancelar</button>
   </div>
 
-  <script>
+  <script type="module">
+    import { showSnackbar } from "./modules/ui.js";
+
     function cancelar() {
-      window.location.href = ("nivel.html?id="+localStorage.getItem("previous_level")) || "index.html";
+      window.location.href = ("nivel.html?id=" + localStorage.getItem("previous_level")) || "index.html";
     }
 
-    function showSnackbar(message) {
-      const snackbar = document.createElement("div");
-      snackbar.className = "snackbar";
-      snackbar.innerText = message;
-      document.body.appendChild(snackbar);
-      snackbar.classList.add("show");
-      setTimeout(() => snackbar.remove(), 3000);
-    }
+    // Expose to global scope for button onclick
+    window.cancelar = cancelar;
 
     document.addEventListener("DOMContentLoaded", () => {
       const html5QrCode = new Html5Qrcode("reader");
@@ -41,9 +38,9 @@
             console.log("Código detectado:", decodedText);
             html5QrCode.stop();
             localStorage.setItem("last_qr", decodedText);
-            showSnackbar("QR detectado ✅ "+decodedText );
+            showSnackbar("QR detectado ✅ " + decodedText);
             setTimeout(() => {
-              window.location.href = ("nivel.html?id="+localStorage.getItem("previous_level")) || "index.html";
+              window.location.href = ("nivel.html?id=" + localStorage.getItem("previous_level")) || "index.html";
             }, 1500);
           },
           (errorMessage) => {
@@ -57,4 +54,5 @@
     });
   </script>
 </body>
+
 </html>

@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,6 +8,7 @@
   <link rel="stylesheet" href="style.css">
 
 </head>
+
 <body>
   <div class="container">
     <h1>GPS 🧭</h1>
@@ -27,28 +29,29 @@
   </div>
 
   <!-- importante definir el src, para cargar las funciones adecuadas -->
-    <script type="module">
+  <script type="module">
     import * as game from "./game.js";
- 
+
     function cancelar() {
-      const previous_level=localStorage.getItem("previous_level");
-      if((""+previous_level)!="undefined"){
-        window.location.href = ("nivel.html?id="+previous_level);
-      }else{
+      const previous_level = localStorage.getItem("previous_level");
+      if (("" + previous_level) != "undefined") {
+        window.location.href = ("nivel.html?id=" + previous_level);
+      } else {
         window.location.href = ("index.html");
-      }      
+      }
     }
 
     function devGps() {
       window.location.href = ("gps-test-dev.html");
 
     }
-        // 3. Adjuntar los event listeners (la mejor práctica)
+    // 3. Adjuntar los event listeners (la mejor práctica)
     document.getElementById('btn-cancelar').addEventListener('click', cancelar);
     document.getElementById('btn-devGps').addEventListener('click', devGps);
     document.getElementById('btn-handleLocation').addEventListener('click', game.handleLocation);
-    document.getElementById('btn-compareLocation').addEventListener('click', game.compareLocation("JD"));
+    document.getElementById('btn-compareLocation').addEventListener('click', () => game.compareLocation("JD"));
 
   </script>
 </body>
+
 </html>
