@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,6 +8,7 @@
   <link rel="stylesheet" href="style.css">
   <script type="module" src="game.js"></script>
 </head>
+
 <body>
   <div class="container">
     <h1></h1>
@@ -27,30 +29,17 @@
     </div>
     <!-- 👇 Aquí va el botón con el stat al lado -->
     <div class="actions-row">
-    <button id="scan-btn">Usar Carta</button>
-    <div class="stat-inline">⚙️ Acciones: <span id="stat-acciones"></span></div>
+      <button id="scan-btn">Usar Carta</button>
+      <div class="stat-inline">⚙️ Acciones: <span id="stat-acciones"></span></div>
     </div>
   </div>
-    <button id="btn-menu-guardar">Menu Guardar</button>
- 
-    <script type="module">
+  <button id="btn-menu-guardar">Menu Guardar</button>
+
+  <script type="module">
     import * as game from "./game.js";
     game.loadLevel();
-    const last = localStorage.getItem("last_qr");
-    console.log("último Código detectado:", last);
-    //game.showSnackbar("debug: last "+last);
-    if (last) {
-      if (last.toLowerCase() === "cafe") {
-        game.modifyStat("acciones", -1);
-        game.modifyStat("amor", 2);
-        game.showSnackbar("¡Código correcto! ❤️");
-        localStorage.removeItem("last_qr");
-        
-      } else {
-        game.showSnackbar("Código incorrecto 😅");
-        localStorage.removeItem("last_qr");
-      }
-    }
+    game.processQRCode();
   </script>
 </body>
+
 </html>
