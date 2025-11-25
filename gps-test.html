@@ -4,9 +4,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>GPS</title>
+  <title>GPS Test</title>
   <link rel="stylesheet" href="style.css">
-
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
 </head>
 
 <body>
@@ -19,38 +19,39 @@
       <div class="stat">⏳ Tiempo: <span id="stat-tiempo"></span></div>
     </div>
 
-    <img src="assets/cafe.jpg" alt="gps">
+    <img src="assets/cafe.jpg" alt="Imagen de referencia GPS">
     <p>Herramienta de ayuda para GPS</p>
 
     <button id="btn-cancelar">Regresar</button>
-    <button id="btn-devGps">dev gps</button>
-    <button id="btn-handleLocation">handle</button>
-    <button id="btn-compareLocation">compare</button>
+    <button id="btn-devGps">Dev GPS</button>
+    <button id="btn-handleLocation">Obtener Ubicación</button>
+    <button id="btn-compareLocation">Comparar Ubicación (JD)</button>
   </div>
 
-  <!-- importante definir el src, para cargar las funciones adecuadas -->
   <script type="module">
-    import * as game from "./game.js";
+    import { handleLocation, compareLocation, loadStats } from "./game.js";
+
+    // Initialize stats
+    loadStats();
 
     function cancelar() {
       const previous_level = localStorage.getItem("previous_level");
-      if (("" + previous_level) != "undefined") {
-        window.location.href = ("nivel.html?id=" + previous_level);
+      if (previous_level && previous_level !== "undefined") {
+        window.location.href = `nivel.html?id=${previous_level}`;
       } else {
-        window.location.href = ("index.html");
+        window.location.href = "index.html";
       }
     }
 
     function devGps() {
-      window.location.href = ("gps-test-dev.html");
-
+      window.location.href = "gps-test-dev.html";
     }
-    // 3. Adjuntar los event listeners (la mejor práctica)
+
+    // Event Listeners
     document.getElementById('btn-cancelar').addEventListener('click', cancelar);
     document.getElementById('btn-devGps').addEventListener('click', devGps);
-    document.getElementById('btn-handleLocation').addEventListener('click', game.handleLocation);
-    document.getElementById('btn-compareLocation').addEventListener('click', () => game.compareLocation("JD"));
-
+    document.getElementById('btn-handleLocation').addEventListener('click', handleLocation);
+    document.getElementById('btn-compareLocation').addEventListener('click', () => compareLocation("JD"));
   </script>
 </body>
 

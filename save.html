@@ -1,15 +1,17 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Save</title>
+  <title>Guardar Partida</title>
   <link rel="stylesheet" href="style.css">
- 
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
 </head>
+
 <body>
   <div class="container">
-    <h1>Save Game ☕</h1>
+    <h1>Guardar Partida ☕</h1>
     <div class="stats">
       <div class="stat">❤️ Amor: <span id="stat-amor"></span></div>
       <div class="stat">✝️ Fe: <span id="stat-fe"></span></div>
@@ -17,40 +19,42 @@
       <div class="stat">⏳ Tiempo: <span id="stat-tiempo"></span></div>
     </div>
 
-    <img src="assets/images/inicio.webp" alt="inicio">
+    <img src="assets/images/inicio.webp" alt="Imagen de guardar partida">
     <p>Aquí puedes guardar o cargar el juego...</p>
 
     <button id="btn-download">💾 Guardar partida</button>
     <input type="file" id="uploadInput" accept=".json" style="display:none">
     <button id="btn-upload">📂 Cargar partida</button>
     <button id="btn-cancelar">Regresar</button>
- 
   </div>
 
-  <!-- importante definir el src, para cargar las funciones adecuadas -->
-  
   <script type="module">
-    import * as game from "./game.js";
-    console.log(`loaded save.html`); 
-    function cancelar() {
-     console.log(`click on btn-cancelar`);
-      window.location.href = ("nivel.html?id="+localStorage.getItem("previous_level")) || "index.html";
-    }
- 
-    // 3. Adjuntar los event listeners (la mejor práctica)
-    //document.getElementById('btn-guardar').addEventListener('click', game.saveGame);
-    //document.getElementById('btn-cargar').addEventListener('click', game.loadGame);
-    document.getElementById('btn-cancelar').addEventListener('click', cancelar);
+    import { downloadSave, uploadSave, loadStats } from "./game.js";
 
-    document.getElementById('btn-download').addEventListener('click', game.downloadSave);
-    document.getElementById("btn-upload").onclick = () => {
-      document.getElementById("uploadInput").click();
-    };
-    document.getElementById("uploadInput").addEventListener("change", (e) => {
-      const file = e.target.files[0];
-      if (file) game.uploadSave(file);
+    // Initialize stats
+    loadStats();
+
+    function cancelar() {
+      const prevLevel = localStorage.getItem("previous_level");
+      window.location.href = prevLevel ? `nivel.html?id=${prevLevel}` : "index.html";
+    }
+
+    // Event Listeners
+    document.getElementById('btn-cancelar').addEventListener('click', cancelar);
+    document.getElementById('btn-download').addEventListener('click', downloadSave);
+
+    const uploadBtn = document.getElementById("btn-upload");
+    const uploadInput = document.getElementById("uploadInput");
+
+    uploadBtn.addEventListener("click", () => {
+      uploadInput.click();
     });
 
+    uploadInput.addEventListener("change", (e) => {
+      const file = e.target.files[0];
+      if (file) uploadSave(file);
+    });
   </script>
 </body>
+
 </html>

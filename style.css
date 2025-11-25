@@ -1,29 +1,54 @@
+:root {
+  /* Colors */
+  --primary-color: #e91e63;
+  --primary-hover: #d81b60;
+  --secondary-color: #c2185b;
+  --background-gradient-start: #ffe3ec;
+  --background-gradient-end: #ffc8dd;
+  --text-color: #333;
+  --white: #ffffff;
+  --overlay-bg: rgba(0, 0, 0, 0.6);
+
+  /* Spacing */
+  --spacing-sm: 10px;
+  --spacing-md: 15px;
+  --spacing-lg: 20px;
+  --spacing-xl: 30px;
+
+  /* Borders */
+  --border-radius: 12px;
+  --box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
 body {
   font-family: 'Poppins', sans-serif;
   text-align: center;
-  background: linear-gradient(135deg, #ffe3ec, #ffc8dd);
-  color: #333;
+  background: linear-gradient(135deg, var(--background-gradient-start), var(--background-gradient-end));
+  color: var(--text-color);
   margin: 0;
   padding: 0;
+  min-height: 100vh;
 }
 
 .container {
   max-width: 400px;
-  margin: 30px auto;
-  padding: 20px;
-  background: #fff;
-  border-radius: 15px;
-  box-shadow: 0 0 15px rgba(0,0,0,0.1);
+  margin: var(--spacing-xl) auto;
+  padding: var(--spacing-lg);
+  background: var(--white);
+  border-radius: var(--border-radius);
+  box-shadow: var(--box-shadow);
 }
 
 h1 {
-  color: #e91e63;
+  color: var(--primary-color);
+  margin-bottom: var(--spacing-md);
 }
 
+/* Stats */
 .stats {
   display: flex;
   justify-content: space-around;
-  margin-bottom: 15px;
+  margin-bottom: var(--spacing-md);
   font-size: 16px;
 }
 
@@ -38,20 +63,29 @@ h1 {
   font-size: 18px;
 }
 
+/* Images */
 img {
   width: 100%;
   border-radius: 10px;
+  display: block;
+  margin-bottom: var(--spacing-md);
 }
 
+/* Buttons */
 button {
-  background: #e91e63;
-  color: white;
+  background: var(--primary-color);
+  color: var(--white);
   border: none;
-  padding: 10px 20px;
+  padding: var(--spacing-sm) var(--spacing-lg);
   border-radius: 8px;
   font-size: 16px;
   cursor: pointer;
-  margin-top: 15px;
+  margin-top: var(--spacing-md);
+  transition: background 0.3s ease;
+}
+
+button:hover {
+  background: var(--primary-hover);
 }
 
 /* Snackbar */
@@ -59,7 +93,7 @@ button {
   visibility: hidden;
   min-width: 250px;
   background-color: #333;
-  color: #fff;
+  color: var(--white);
   text-align: center;
   border-radius: 8px;
   padding: 14px;
@@ -71,6 +105,10 @@ button {
   font-size: 16px;
   opacity: 0;
   transition: opacity 0.5s, bottom 0.5s;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
 }
 
 .snackbar.show {
@@ -79,60 +117,62 @@ button {
   bottom: 50px;
 }
 
-/* Fondo semitransparente */
+.snackbar button {
+  background: transparent;
+  padding: 0;
+  margin: 0;
+  font-size: 1.2em;
+}
+
+/* Overlay & Dialog */
 .overlay {
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(0,0,0,0.6);
+  background: var(--overlay-bg);
   display: flex;
   justify-content: center;
   align-items: center;
   z-index: 1000;
 }
 
-/* Cuadro del diálogo */
 .dialog {
-  background: white;
-  padding: 20px 30px;
-  border-radius: 12px;
+  background: var(--white);
+  padding: var(--spacing-lg) var(--spacing-xl);
+  border-radius: var(--border-radius);
   text-align: center;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-  width: 300px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  width: 90%;
+  max-width: 320px;
   animation: fadeIn 0.3s ease-in-out;
-  /*font-size: 2rem; /* 🔹 aumenta tamaño de la letra */
 }
 
-/* Animación suave */
 @keyframes fadeIn {
-  from { opacity: 0; transform: scale(0.9); }
-  to { opacity: 1; transform: scale(1); }
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
 }
 
-/* Botones del diálogo */
 .dialog-buttons {
   display: flex;
   flex-direction: column;
-  gap: 10px;
-  margin-top: 15px;
+  gap: var(--spacing-sm);
+  margin-top: var(--spacing-md);
 }
 
 .dialog button {
-  padding: 10px;
-  border: none;
-  border-radius: 8px;
-  background-color: #E91E63;
-  color: white;
-  cursor: pointer;
+  width: 100%;
 }
 
-.dialog button:hover {
-  background-color: #c2185b;
-}
-
-/* --- Estilos para el botón y stat al lado --- */
+/* Actions Row */
 .actions-row {
   display: flex;
   align-items: center;
@@ -141,27 +181,17 @@ button {
   margin-top: 20px;
 }
 
-.actions-row button {
-  background-color: #e91e63;
-  color: white;
-  border: none;
-  border-radius: 12px;
-  padding: 10px 16px;
-  font-size: 1em;
-  cursor: pointer;
-  transition: background 0.3s;
-}
-
-.actions-row button:hover {
-  background-color: #d81b60;
-}
-
 .stat-inline {
   font-size: 1.1em;
-  color: #333;
+  color: var(--text-color);
   font-weight: bold;
 }
 
 #password-input {
   font-size: 1.2rem;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  width: 80%;
+  margin-bottom: var(--spacing-sm);
 }

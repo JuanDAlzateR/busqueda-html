@@ -1,96 +1,124 @@
 // ==================== UI MODULE ====================
 
-// ==================== SNACKBAR ====================
-export function showSnackbar(message, time = 4000, permanent = false) {
-    const snackbar = document.createElement("div");
-    snackbar.className = "snackbar";
-    snackbar.innerHTML = `
-    <span>${message}</span>
-    <button onclick="this.parentElement.remove()">✖</button>
-  `;
-    document.body.appendChild(snackbar);
+class UIManager {
+    constructor() {
+        this.overlayClass = "overlay";
+        this.dialogClass = "dialog";
+        this.snackbarClass = "snackbar";
+    }
 
-    setTimeout(() => {
-        snackbar.classList.add("show");
-    }, 100); // pequeña pausa para activar animación
+    /**
+     * Shows a snackbar message.
+     * @param {string} message 
+     * @param {number} time 
+     * @param {boolean} permanent 
+     */
+    showSnackbar(message, time = 4000, permanent = false) {
+        const snackbar = document.createElement("div");
+        snackbar.className = this.snackbarClass;
+        snackbar.innerHTML = `
+            <span>${message}</span>
+            <button aria-label="Cerrar" onclick="this.parentElement.remove()">✖</button>
+        `;
+        document.body.appendChild(snackbar);
 
-    if (!permanent) {
-        setTimeout(() => {
-            snackbar.classList.remove("show");
-            snackbar.remove();
-        }, time);
+        // Trigger animation
+        requestAnimationFrame(() => {
+            snackbar.classList.add("show");
+        });
+
+        if (!permanent) {
+            setTimeout(() => {
+                snackbar.classList.remove("show");
+                setTimeout(() => snackbar.remove(), 500); // Wait for transition
+            }, time);
+        }
+    }
+
+    /**
+     * Creates a modal overlay.
+     * @returns {HTMLElement}
+     */
+    createOverlay() {
+        const overlay = document.createElement("div");
+        overlay.className = this.overlayClass;
+        return overlay;
+    }
+
+    /**
+     * Shows a dialog to choose the next level.
+     * @param {string[]} nextLevels 
+     * @param {function(string): void} onSelect 
+     */
+    showNextLevelDialog(nextLevels, onSelect) {
+        const overlay = this.createOverlay();
+        const dialog = document.createElement("div");
+        dialog.className = this.dialogClass;
+
+        const title = document.createElement("h2");
+        title.innerText = "Elige tu siguiente destino ❤️";
+
+        const buttonsContainer = document.createElement("div");
+        buttonsContainer.className = "dialog-buttons";
+
+        nextLevels.forEach((lvl) => {
+            const btn = document.createElement("button");
+            btn.innerText = `Ir a nivel ${lvl}`;
+            btn.onclick = () => {
+                overlay.remove();
+                onSelect(lvl);
+            };
+            buttonsContainer.appendChild(btn);
+        });
+
+        const closeBtn = document.createElement("button");
+        closeBtn.innerText = "Cancelar";
+        closeBtn.onclick = () => overlay.remove();
+
+        dialog.append(title, buttonsContainer, closeBtn);
+        overlay.appendChild(dialog);
+        document.body.appendChild(overlay);
+    }
+
+    /**
+     * Shows a reward dialog.
+     * @param {Object} level 
+     * @param {function(): void} onContinue 
+     */
+    showRewardDialog(level, onContinue) {
+        const overlay = this.createOverlay();
+        const dialog = document.createElement("div");
+        dialog.className = this.dialogClass;
+
+        const title = document.createElement("h2");
+        title.innerText = "🎁 ¡Recompensa desbloqueada!";
+
+        const img = document.createElement("img");
+        img.src = level.reward?.image || "assets/images/reward_default.png";
+        img.alt = "Recompensa";
+        img.style.width = "200px";
+        img.style.borderRadius = "10px";
+        img.style.margin = "10px 0";
+
+        const text = document.createElement("p");
+        text.innerText = level.reward?.text || "¡Has ganado puntos de amor! ❤️";
+
+        const btn = document.createElement("button");
+        btn.innerText = "Continuar ➡️";
+        btn.onclick = () => {
+            overlay.remove();
+            onContinue();
+        };
+
+        dialog.append(title, img, text, btn);
+        overlay.appendChild(dialog);
+        document.body.appendChild(overlay);
     }
 }
 
-// ==================== POPUP PARA ELEGIR RUTA ====================
-export function showNextLevelDialog(nextLevels, onSelect) {
-    // Crear el fondo oscuro
-    const overlay = document.createElement("div");
-    overlay.className = "overlay";
+export const uiManager = new UIManager();
 
-    // Crear el cuadro del diálogo
-    const dialog = document.createElement("div");
-    dialog.className = "dialog";
-
-    const title = document.createElement("h2");
-    title.innerText = "Elige tu siguiente destino ❤️";
-
-    const buttons = document.createElement("div");
-    buttons.className = "dialog-buttons";
-
-    nextLevels.forEach((lvl) => {
-        const btn = document.createElement("button");
-        btn.innerText = `Ir a nivel ${lvl}`;
-        btn.onclick = () => {
-            overlay.remove();
-            onSelect(lvl);
-        };
-        buttons.appendChild(btn);
-    });
-
-    const closeBtn = document.createElement("button");
-    closeBtn.innerText = "Cancelar";
-    closeBtn.onclick = () => overlay.remove();
-
-    dialog.appendChild(title);
-    dialog.appendChild(buttons);
-    dialog.appendChild(closeBtn);
-    overlay.appendChild(dialog);
-    document.body.appendChild(overlay);
-}
-
-// ==================== POPUP PARA RECOMPENSA ====================
-export function showRewardDialog(level, onContinue) {
-    const overlay = document.createElement("div");
-    overlay.className = "overlay";
-
-    const dialog = document.createElement("div");
-    dialog.className = "dialog";
-
-    const title = document.createElement("h2");
-    title.innerText = "🎁 ¡Recompensa desbloqueada!";
-
-    const img = document.createElement("img");
-    img.src = level.reward?.image || "assets/images/reward_default.png";
-    img.alt = "Recompensa";
-    img.style.width = "200px";
-    img.style.borderRadius = "10px";
-    img.style.margin = "10px 0";
-
-    const text = document.createElement("p");
-    text.innerText = level.reward?.text || "¡Has ganado puntos de amor! ❤️";
-
-    const btn = document.createElement("button");
-    btn.innerText = "Continuar ➡️";
-    btn.onclick = () => {
-        overlay.remove();
-        onContinue();
-    };
-
-    dialog.appendChild(title);
-    dialog.appendChild(img);
-    dialog.appendChild(text);
-    dialog.appendChild(btn);
-    overlay.appendChild(dialog);
-    document.body.appendChild(overlay);
-}
+// Export wrapper functions for backward compatibility
+export const showSnackbar = (m, t, p) => uiManager.showSnackbar(m, t, p);
+export const showNextLevelDialog = (n, o) => uiManager.showNextLevelDialog(n, o);
+export const showRewardDialog = (l, o) => uiManager.showRewardDialog(l, o);

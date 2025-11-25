@@ -1,15 +1,17 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Homev1.0.3</title>
+  <title>Home v1.0.3</title>
   <link rel="stylesheet" href="style.css">
- 
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
 </head>
+
 <body>
   <div class="container">
-    <h1>Home v1.0.3☕</h1>
+    <h1>Home v1.0.3 ☕</h1>
     <div class="stats">
       <div class="stat">❤️ Amor: <span id="stat-amor"></span></div>
       <div class="stat">✝️ Fe: <span id="stat-fe"></span></div>
@@ -17,43 +19,49 @@
       <div class="stat">⏳ Tiempo: <span id="stat-tiempo"></span></div>
     </div>
 
-    <img src="assets/images/inicio.webp" alt="inicio">
+    <img src="assets/images/inicio.webp" alt="Imagen de inicio de la aventura">
     <p>Empieza la aventura...</p>
 
     <button id="btn-empezar">Empezar</button>
     <button id="btn-continuar">Continuar</button>
     <button id="btn-gps">GPS</button>
- 
+
   </div>
 
-  <!-- importante definir el src, para cargar las funciones adecuadas -->
-  
   <script type="module">
-    import * as game from "./game.js";
-    game.resetStat();
-    function goToStart() { 
+    import { game, resetStat, showSnackbar, loadGame } from "./game.js";
+
+    // Initialize stats on load (already done in game.init() but safe to ensure)
+    // game.init(); 
+
+    // Reset stats for new game
+    function goToStart() {
       if (localStorage.getItem("savegame") !== null) {
         localStorage.removeItem("savegame");
       }
+      resetStat();
       window.location.href = "nivel.html?id=Inicio";
     }
-    function goTo() { 
+
+    function goTo() {
       const data = JSON.parse(localStorage.getItem("savegame"));
       if (data) {
-        game.showSnackbar("Cargando juego...")
-        game.loadGame();
-      }else{
-      game.showSnackbar("No hay un juego previo para continuar");
+        showSnackbar("Cargando juego...");
+        loadGame();
+      } else {
+        showSnackbar("No hay un juego previo para continuar");
       }
     }
-    function goToGPS() {        
-        window.location.href = "gps-test.html";
-    }
-    // 3. Adjuntar los event listeners (la mejor práctica)
-    document.getElementById('btn-empezar').addEventListener('click', goToStart);
-    document.getElementById('btn-continuar').addEventListener('click', goTo);    
-    document.getElementById('btn-gps').addEventListener('click', goToGPS);
 
+    function goToGPS() {
+      window.location.href = "gps-test.html";
+    }
+
+    // Event Listeners
+    document.getElementById('btn-empezar').addEventListener('click', goToStart);
+    document.getElementById('btn-continuar').addEventListener('click', goTo);
+    document.getElementById('btn-gps').addEventListener('click', goToGPS);
   </script>
 </body>
+
 </html>
