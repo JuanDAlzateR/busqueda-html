@@ -1,5 +1,5 @@
 // ==================== CARDS MODULE ====================
-import { modifyStat } from "./stats.js";
+import { getStat, modifyStat } from "./stats.js";
 import { showSnackbar } from "./ui.js";
 
 /**
@@ -17,7 +17,6 @@ class CardManager {
                 name: "Carta de Amor",
                 effect: () => {
                     modifyStat("amor", 2);
-                    modifyStat("acciones", -1);
                 },
                 message: "¡Has ganado puntos de amor! ❤️"
             },
@@ -25,7 +24,6 @@ class CardManager {
                 name: "Carta de Fe",
                 effect: () => {
                     modifyStat("fe", 2);
-                    modifyStat("acciones", -1);
                 },
                 message: "¡Has ganado puntos de fe! ✝️"
             },
@@ -33,7 +31,6 @@ class CardManager {
                 name: "Carta de Dinero",
                 effect: () => {
                     modifyStat("dinero", 2);
-                    modifyStat("acciones", -1);
                 },
                 message: "¡Has ganado dinero! 💰"
             },
@@ -41,7 +38,6 @@ class CardManager {
                 name: "Carta de Tiempo",
                 effect: () => {
                     modifyStat("tiempo", 2);
-                    modifyStat("acciones", -1);
                 },
                 message: "¡Has ganado tiempo! ⏳"
             },
@@ -52,14 +48,237 @@ class CardManager {
                 },
                 message: "¡Has recuperado acciones! ⚙️"
             },
-            // Legacy support
-            "CAFE": {
-                name: "Carta Café",
+            // Cards
+            "QR01": {
+                name: "Teletransportación",
+                effect: () => {
+                    //
+                },
+                message: "Has usado teletransportación"
+            },
+            "QR02": {
+                name: "Paseo Juntos",
+                effect: () => {
+                    modifyStat("acciones", 2);
+                },
+                message: "Arrastra 1 carta"
+            },
+            "QR03": {
+                name: "Carta de Dinero",
+                effect: () => {
+                    modifyStat("acciones", +1);
+                },
+                message: "Arrastra 2 cartas"
+            },
+            "QR04": {
+                name: "Regalo con Amor",
+                effect: () => {
+                    modifyStat("amor", 3);
+
+                },
+                message: "¡Has ganado 3 puntos de amor! ❤️"
+            },
+            "QR05": {
+                name: "Planear Paseo",
+                effect: () => {
+                    //
+                },
+                message: "¡Has usado planear paseo! ⚙️"
+            },
+            "QR06": {
+                name: "Consultar Mapa",
                 effect: () => {
                     modifyStat("amor", 2);
-                    modifyStat("acciones", -1);
+
                 },
-                message: "¡Código correcto! ❤️"
+                message: "¡Has usado consulatr mapa!"
+            },
+            "QR07": {
+                name: "Parte Mapa",
+                effect: () => {
+                    //
+                    ;
+                },
+                message: "¡Has usado parte mapa!"
+            },
+            "QR08": {
+                name: "Rezar a Maria",
+                effect: () => {
+                    modifyStat("fe", 2);
+
+                },
+                message: "¡Has ganado 2 puntos de fe! ✝️"
+            },
+            "QR09": {
+                name: "Ahorro",
+                effect: () => {
+                    modifyStat("dinero", 1);
+
+                },
+                message: "¡Has ganado dinero! 💰"
+            },
+            "QR10": {
+                name: "Carta de Acción",
+                effect: () => {
+                    modifyStat("acciones", 3);
+                },
+                message: "¡Has recuperado acciones! ⚙️"
+            },
+            "QR11": {
+                name: "Renacer en el Espíritu",
+                effect: () => {
+                    //
+
+                },
+                message: "Elimina una carta permanentemente"
+            },
+            "QR12": {
+                name: "Carta de Fe",
+                effect: () => {
+                    modifyStat("fe", 2);
+
+                },
+                message: "¡Has ganado puntos de fe! ✝️"
+            },
+            "QR13": {
+                name: "juegos de mesa",
+                effect: () => {
+                    //
+
+                },
+                message: "Aplica el efecto de la carta"
+            },
+            "QR14": {
+                name: "Compartir con amigos",
+                effect: () => {
+                    modifyStat("tiempo", 2);
+
+                },
+                message: "¡Has ganado tiempo! ⏳"
+            },
+            "QR15": {
+                name: "Compartir en familia",
+                effect: () => {
+                    modifyStat("acciones", 3);
+                },
+                message: "¡Has recuperado acciones! ⚙️"
+            },
+            "QR16": {
+                name: "Carta de Amor",
+                effect: () => {
+                    modifyStat("amor", 2);
+
+                },
+                message: "¡Has ganado puntos de amor! ❤️"
+            },
+            "QR17": {
+                name: "Carta de Fe",
+                effect: () => {
+                    modifyStat("fe", 2);
+
+                },
+                message: "¡Has ganado puntos de fe! ✝️"
+            },
+            "QR18": {
+                name: "Carta de Dinero",
+                effect: () => {
+                    modifyStat("dinero", 2);
+
+                },
+                message: "¡Has ganado dinero! 💰"
+            },
+            "QR19": {
+                name: "Carta de Tiempo",
+                effect: () => {
+                    modifyStat("tiempo", 2);
+
+                },
+                message: "¡Has ganado tiempo! ⏳"
+            },
+            "QR20": {
+                name: "Carta de Acción",
+                effect: () => {
+                    modifyStat("acciones", 3);
+                },
+                message: "¡Has recuperado acciones! ⚙️"
+            },
+            "QR21": {
+                name: "Carta de Amor",
+                effect: () => {
+                    modifyStat("amor", 2);
+
+                },
+                message: "¡Has ganado puntos de amor! ❤️"
+            },
+            "QR22": {
+                name: "Carta de Fe",
+                effect: () => {
+                    modifyStat("fe", 2);
+
+                },
+                message: "¡Has ganado puntos de fe! ✝️"
+            },
+            "QR23": {
+                name: "Carta de Dinero",
+                effect: () => {
+                    modifyStat("dinero", 2);
+
+                },
+                message: "¡Has ganado dinero! 💰"
+            },
+            "QR24": {
+                name: "Carta de Tiempo",
+                effect: () => {
+                    modifyStat("tiempo", 2);
+
+                },
+                message: "¡Has ganado tiempo! ⏳"
+            },
+            "QR25": {
+                name: "Carta de Acción",
+                effect: () => {
+                    modifyStat("acciones", 3);
+                },
+                message: "¡Has recuperado acciones! ⚙️"
+            },
+            "QR26": {
+                name: "Carta de Amor",
+                effect: () => {
+                    modifyStat("amor", 2);
+
+                },
+                message: "¡Has ganado puntos de amor! ❤️"
+            },
+            "QR27": {
+                name: "Carta de Fe",
+                effect: () => {
+                    modifyStat("fe", 2);
+
+                },
+                message: "¡Has ganado puntos de fe! ✝️"
+            },
+            "QR28": {
+                name: "Carta de Dinero",
+                effect: () => {
+                    modifyStat("dinero", 2);
+
+                },
+                message: "¡Has ganado dinero! 💰"
+            },
+            "QR29": {
+                name: "Carta de Tiempo",
+                effect: () => {
+                    modifyStat("tiempo", 2);
+
+                },
+                message: "¡Has ganado tiempo! ⏳"
+            },
+            "QR30": {
+                name: "Carta de Acción",
+                effect: () => {
+                    modifyStat("acciones", 3);
+                },
+                message: "¡Has recuperado acciones! ⚙️"
             }
         };
     }
@@ -82,8 +301,14 @@ class CardManager {
             const card = this.cards[cardKey];
 
             if (card) {
-                card.effect();
-                showSnackbar(card.message);
+                if (getStat("acciones") > 0) {
+                    modifyStat("acciones", -1);
+                    card.effect();
+                    showSnackbar(card.message);
+                } else {
+                    showSnackbar("No tienes acciones para jugar la carta 😅");
+                }
+
             } else {
                 showSnackbar("Código incorrecto o carta desconocida 😅");
             }
