@@ -151,7 +151,7 @@ class CardManager {
             "QR14": {
                 name: "Compartir con amigos",
                 effect: () => {
-                    modifyStat("tiempo", 2);
+                    //
 
                 },
                 message: "¡Has ganado tiempo! ⏳"
@@ -159,61 +159,63 @@ class CardManager {
             "QR15": {
                 name: "Compartir en familia",
                 effect: () => {
-                    modifyStat("acciones", 3);
+                    //
                 },
                 message: "¡Has recuperado acciones! ⚙️"
             },
             "QR16": {
-                name: "Carta de Amor",
+                name: "Salir a comer",
                 effect: () => {
-                    modifyStat("amor", 2);
+                    //
 
                 },
-                message: "¡Has ganado puntos de amor! ❤️"
+                message: "Arrastra 3 cartas"
             },
             "QR17": {
-                name: "Carta de Fe",
+                name: "Dia de picnic",
                 effect: () => {
-                    modifyStat("fe", 2);
+                    modifyStat("acciones", 2);
 
                 },
                 message: "¡Has ganado puntos de fe! ✝️"
             },
             "QR18": {
-                name: "Carta de Dinero",
+                name: "Conversar Juntos",
                 effect: () => {
-                    modifyStat("dinero", 2);
+                    modifyStat("acciones", 1);
 
                 },
-                message: "¡Has ganado dinero! 💰"
+                message: "Mira la siguiente carta del mazo, descartala o devuelvela al mazo en su posición"
             },
             "QR19": {
-                name: "Carta de Tiempo",
+                name: "Estado Barados",
                 effect: () => {
-                    modifyStat("tiempo", 2);
+                    //
 
                 },
-                message: "¡Has ganado tiempo! ⏳"
+                message: "¡No tiene efecto!"
             },
             "QR20": {
-                name: "Carta de Acción",
+                name: "Ir a un retiro",
                 effect: () => {
-                    modifyStat("acciones", 3);
+                    //activar efecto para el siguiente turno
+
                 },
-                message: "¡Has recuperado acciones! ⚙️"
+                message: "¡Descarta toda tu mano!"
             },
             "QR21": {
-                name: "Carta de Amor",
+                name: "Cor 1 13",
                 effect: () => {
-                    modifyStat("amor", 2);
+                    //aplicar efecto durante este turno.
 
                 },
                 message: "¡Has ganado puntos de amor! ❤️"
             },
             "QR22": {
-                name: "Carta de Fe",
+                name: "Comer afuera",
                 effect: () => {
-                    modifyStat("fe", 2);
+
+                    modifyStat("dinero", -2);
 
                 },
                 message: "¡Has ganado puntos de fe! ✝️"
