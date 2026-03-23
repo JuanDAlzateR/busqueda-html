@@ -1,16 +1,17 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Nivel</title>
   <link rel="stylesheet" href="style.css">
-  <script type="module" src="game.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
 </head>
+
 <body>
   <div class="container">
-    <h1></h1>
-
+    <h1>Nivel</h1>
     <div class="stats">
       <div class="stat">❤️ Amor: <span id="stat-amor"></span></div>
       <div class="stat">✝️ Fe: <span id="stat-fe"></span></div>
@@ -18,39 +19,26 @@
       <div class="stat">⏳ Tiempo: <span id="stat-tiempo"></span></div>
     </div>
 
-    <img id="level-image" src="" alt="imagen del nivel" />
-    <p id="level-text"></p>
+    <img id="level-image" src="" alt="Imagen del nivel">
+    <p id="level-text">Cargando...</p>
 
-    <div class="input-box">
-      <input id="password-input" type="text" placeholder="Escribe la respuesta..." />
-      <button id="confirm-btn">Confirmar</button>
-    </div>
-    <!-- 👇 Aquí va el botón con el stat al lado -->
+    <input type="text" id="password-input" placeholder="Escribe tu respuesta aquí...">
+
     <div class="actions-row">
-    <button id="scan-btn">Usar Carta</button>
-    <div class="stat-inline">⚙️ Acciones: <span id="stat-acciones"></span></div>
+      <button id="confirm-btn">Confirmar ✅</button>
+      <div class="stat-inline">⚙️ Acciones: <span id="stat-acciones"></span></div>
     </div>
+
+    <button id="scan-btn">Escanear QR 📷</button>
+    <button id="btn-menu-guardar">Guardar y Salir 💾</button>
   </div>
-    <button id="btn-menu-guardar">Menu Guardar</button>
- 
-    <script type="module">
-    import * as game from "./game.js";
-    game.loadLevel();
-    const last = localStorage.getItem("last_qr");
-    console.log("último Código detectado:", last);
-    //game.showSnackbar("debug: last "+last);
-    if (last) {
-      if (last.toLowerCase() === "cafe") {
-        game.modifyStat("acciones", -1);
-        game.modifyStat("amor", 2);
-        game.showSnackbar("¡Código correcto! ❤️");
-        localStorage.removeItem("last_qr");
-        
-      } else {
-        game.showSnackbar("Código incorrecto 😅");
-        localStorage.removeItem("last_qr");
-      }
-    }
+
+  <script type="module">
+    import { loadLevel } from "./game.js";
+
+    // Initialize level on load
+    loadLevel();
   </script>
 </body>
+
 </html>
