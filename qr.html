@@ -6,6 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Escanear QR</title>
   <link rel="stylesheet" href="style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
   <script src="https://unpkg.com/html5-qrcode"></script>
 </head>
 
@@ -13,19 +14,19 @@
   <div class="container">
     <h1>Escanea el Código QR 📷</h1>
     <p>Si deseas usar una carta, escanea su código QR</p>
-    <div id="reader" style="width:300px; margin:auto;"></div>
-    <button onclick="cancelar()">Cancelar</button>
+    <div id="reader" style="width:100%; max-width: 300px; margin:auto;"></div>
+    <button id="btn-cancelar">Cancelar</button>
   </div>
 
   <script type="module">
-    import { showSnackbar } from "./modules/ui.js";
+    import { showSnackbar, processQRCode } from "./game.js";
 
     function cancelar() {
-      window.location.href = ("nivel.html?id=" + localStorage.getItem("previous_level")) || "index.html";
+      const prevLevel = localStorage.getItem("previous_level");
+      window.location.href = prevLevel ? `nivel.html?id=${prevLevel}` : "index.html";
     }
 
-    // Expose to global scope for button onclick
-    window.cancelar = cancelar;
+    document.getElementById("btn-cancelar").addEventListener("click", cancelar);
 
     document.addEventListener("DOMContentLoaded", () => {
       const html5QrCode = new Html5Qrcode("reader");
@@ -37,14 +38,20 @@
           (decodedText) => {
             console.log("Código detectado:", decodedText);
             html5QrCode.stop();
+
+            // Process QR code directly via game module if possible, or save and redirect
+            // Since processQRCode in cards.js reads from localStorage or arg, we can pass it directly if we were on the same page,
+            // but here we are redirecting back to level. So we save it.
             localStorage.setItem("last_qr", decodedText);
             showSnackbar("QR detectado ✅ " + decodedText);
+
             setTimeout(() => {
-              window.location.href = ("nivel.html?id=" + localStorage.getItem("previous_level")) || "index.html";
+              const prevLevel = localStorage.getItem("previous_level");
+              window.location.href = prevLevel ? `nivel.html?id=${prevLevel}` : "index.html";
             }, 1500);
           },
           (errorMessage) => {
-            console.warn("Escaneo en progreso:", errorMessage);
+            // console.warn("Escaneo en progreso:", errorMessage);
           }
         )
         .catch((err) => {
