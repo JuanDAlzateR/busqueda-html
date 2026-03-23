@@ -114,6 +114,62 @@ class UIManager {
         overlay.appendChild(dialog);
         document.body.appendChild(overlay);
     }
+
+    /**
+     * Shows a generic input dialog.
+     * @param {string} title 
+     * @param {string} message 
+     * @param {function(number): void} callback 
+     */
+    showInputDialog(title, message, callback) {
+        const overlay = this.createOverlay();
+        const dialog = document.createElement("div");
+        dialog.className = this.dialogClass;
+
+        const h2 = document.createElement("h2");
+        h2.innerText = title;
+
+        const p = document.createElement("p");
+        p.innerText = message;
+
+        const input = document.createElement("input");
+        input.type = "number";
+        input.id = "dialog-input";
+        input.placeholder = "Cantidad...";
+        input.style.width = "80%";
+        input.style.padding = "10px";
+        input.style.marginBottom = "15px";
+        input.style.borderRadius = "8px";
+        input.style.border = "1px solid #ccc";
+
+        const buttonsContainer = document.createElement("div");
+        buttonsContainer.className = "dialog-buttons";
+
+        const confirmBtn = document.createElement("button");
+        confirmBtn.innerText = "Confirmar ✅";
+        confirmBtn.onclick = () => {
+            const val = parseInt(input.value);
+            if (!isNaN(val) && val >= 0) {
+                overlay.remove();
+                callback(val);
+            } else {
+                this.showSnackbar("Por favor ingrese una cantidad válida");
+            }
+        };
+
+        const cancelBtn = document.createElement("button");
+        cancelBtn.innerText = "Cancelar ✖";
+        cancelBtn.style.background = "#999";
+        cancelBtn.onclick = () => overlay.remove();
+
+        buttonsContainer.append(confirmBtn, cancelBtn);
+        dialog.append(h2, p, input, buttonsContainer);
+        overlay.appendChild(dialog);
+        document.body.appendChild(overlay);
+
+        // Focus input after render
+        setTimeout(() => input.focus(), 100);
+    }
 }
 
 export const uiManager = new UIManager();
@@ -122,3 +178,4 @@ export const uiManager = new UIManager();
 export const showSnackbar = (m, t, p) => uiManager.showSnackbar(m, t, p);
 export const showNextLevelDialog = (n, o) => uiManager.showNextLevelDialog(n, o);
 export const showRewardDialog = (l, o) => uiManager.showRewardDialog(l, o);
+export const showInputDialog = (t, m, c) => uiManager.showInputDialog(t, m, c);

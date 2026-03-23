@@ -1,6 +1,6 @@
 // ==================== CARDS MODULE ====================
 import { getStat, modifyStat } from "./stats.js";
-import { showSnackbar } from "./ui.js";
+import { showSnackbar, showInputDialog } from "./ui.js";
 
 /**
  * @typedef {Object} CardDefinition
@@ -45,6 +45,13 @@ class CardManager {
                 name: "Carta de Acción",
                 effect: () => {
                     modifyStat("acciones", 3);
+                },
+                message: "¡Has recuperado acciones! ⚙️"
+            },
+            "CAFE": {
+                name: "Carta Cafe",
+                effect: () => {
+                    modifyStat("dinero", 3);
                 },
                 message: "¡Has recuperado acciones! ⚙️"
             },
@@ -214,11 +221,17 @@ class CardManager {
             "QR22": {
                 name: "Comer afuera",
                 effect: () => {
-
-                    modifyStat("dinero", -2);
-
+                    showSnackbar(`Comer afuera 🍽️`, 3000);
+                    showInputDialog(
+                        "Comer afuera 🍽️",
+                        "Favor ingrese la cantidad de dinero a gastar:",
+                        (cantidad) => {
+                            modifyStat("dinero", -cantidad);
+                            showSnackbar(`Has gastado $${cantidad} en comida. ¡Buen provecho! 😋`);
+                        }
+                    );
                 },
-                message: "¡Has ganado puntos de fe! ✝️"
+                message: "¡Hora de comer! 🍕"
             },
             "QR23": {
                 name: "Carta de Dinero",
